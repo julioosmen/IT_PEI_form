@@ -17,9 +17,9 @@ df_ue = cargar_unidades_ejecutoras()
 # ================================
 # Credenciales Supabase
 # ================================
-url = st.secrets.get("SUPABASE_URL", "")
-key = st.secrets.get("SUPABASE_KEY", "")
-supabase = create_client(url, key)
+#url = st.secrets.get("SUPABASE_URL", "")
+#key = st.secrets.get("SUPABASE_KEY", "")
+#supabase = create_client(url, key)
 
 st.title("IT_PEI formulario")
 
