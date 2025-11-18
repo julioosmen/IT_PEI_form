@@ -13,7 +13,7 @@ df_ue = cargar_unidades_ejecutoras()
 
 #st.image("logo.png", width=160)   # Mostrar logo centrado - Ajusta el tamaño si deseas
 st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
-st.subheader(" Buscar Unidad Ejecutora (UE)")
+st.subheader(" Buscar Pliego")
 
 # Crear opciones combinadas para búsqueda
 opciones = [
@@ -23,7 +23,7 @@ opciones = [
 
 # Selectbox con búsqueda tanto por código como por nombre
 seleccion = st.selectbox(
-    "🔍 Selecciona o escribe el código o nombre de la unidad ejecutora",
+    "🔍 Selecciona o escribe el código o nombre del pliego",
     opciones,
     index=None,
     placeholder="Escribe el código o nombre..."
