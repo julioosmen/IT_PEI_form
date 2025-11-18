@@ -69,7 +69,7 @@ if "modo" in st.session_state and seleccion:
         df_ue = historial[historial["codigo_ue"] == codigo]
     
         if df_ue.empty:
-            st.info("No existe historial para esta UE.")
+            st.info("No existe historial para este pliego.")
         else:
             ultimo = df_ue.sort_values("fecha_recepcion", ascending=False).iloc[0]
             st.success("Último registro encontrado:")
