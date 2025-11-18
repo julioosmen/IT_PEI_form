@@ -82,9 +82,11 @@ if "modo" in st.session_state and seleccion:
             with col1:
                 #año = st.number_input("Año", min_value=2000, max_value=2100, step=1)
                 year_now = datetime.now().year
-                st.write(f"**Año:** {year_now}")
-                
-                año = year_now
+                año = st.text_input(
+                    "Año",
+                    value=str(year_now),
+                    disabled=True
+                )
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
                 #vigencia = st.text_input("Vigencia")
                 vigencia = st.selectbox("Vigencia", ["Sí", "No"])
