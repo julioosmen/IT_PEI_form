@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from supabase import create_client
+#from supabase import create_client
 
 # ================================
 # CARGA DEL EXCEL DE UNIDADES EJECUTORAS
