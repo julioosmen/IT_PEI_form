@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime
 #from supabase import create_client
 
 # =====================================
@@ -79,7 +80,11 @@ if "modo" in st.session_state and seleccion:
     
             col1, col2 = st.columns(2)
             with col1:
-                año = st.number_input("Año", min_value=2000, max_value=2100, step=1)
+                #año = st.number_input("Año", min_value=2000, max_value=2100, step=1)
+                year_now = datetime.now().year
+                st.write(f"**Año:** {year_now}")
+                
+                año = year_now
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
                 #vigencia = st.text_input("Vigencia")
                 vigencia = st.selectbox("Vigencia", ["Sí", "No"])
