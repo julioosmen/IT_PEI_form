@@ -11,6 +11,8 @@ def cargar_unidades_ejecutoras():
 
 df_ue = cargar_unidades_ejecutoras()
 
+#st.image("logo.png", width=160)   # Mostrar logo centrado - Ajusta el tamaño si deseas
+st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 st.subheader(" Buscar Unidad Ejecutora (UE)")
 
 # Crear opciones combinadas para búsqueda
