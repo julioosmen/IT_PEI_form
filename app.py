@@ -39,7 +39,7 @@ if seleccion:
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📌 Historial PEI"):
-            st.session_state["modo"] = "buscar"
+            st.session_state["modo"] = "historial"
 
     with col2:
         if st.button("📝 Nuevo registro"):
@@ -51,18 +51,29 @@ if seleccion:
 if "modo" in st.session_state and seleccion:
     codigo = seleccion.split(" - ")[0]
 
-    if st.session_state["modo"] == "buscar":
+    if st.session_state["modo"] == "historial":
         st.subheader("📌 Último PEI registrado")
 
-        data = supabase.table("pei").select("*") \
-                      .eq("codigo_ue", codigo) \
-                      .order("id", desc=True) \
-                      .limit(1).execute().data
+        #data = supabase.table("pei").select("*") \
+        #              .eq("codigo_ue", codigo) \
+        #              .order("id", desc=True) \
+        #              .limit(1).execute().data
 
-        if data:
-            st.json(data[0])
-        else:
+        #if data:
+        #    st.json(data[0])
+        #else:
+        #    st.info("No existe historial para esta UE.")
+
+        historial = pd.read_excel("data/historial_it_pei.xlsx")
+    
+        df_ue = historial[historial["codigo_ue"] == codigo]
+    
+        if df_ue.empty:
             st.info("No existe historial para esta UE.")
+        else:
+            ultimo = df_ue.sort_values("fecha_recepcion", ascending=False).iloc[0]
+            st.success("Último registro encontrado:")
+            st.json(ultimo.to_dict())
 
     #elif st.session_state["modo"] == "nuevo":
         #st.subheader("📝 Crear nuevo registro PEI")
