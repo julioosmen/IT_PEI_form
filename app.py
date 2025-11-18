@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime
 #from supabase import create_client
 
 # =====================================
@@ -37,7 +38,7 @@ if seleccion:
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📌 Buscar último PEI"):
+        if st.button("📌 Historial PEI"):
             st.session_state["modo"] = "buscar"
 
     with col2:
@@ -79,7 +80,13 @@ if "modo" in st.session_state and seleccion:
     
             col1, col2 = st.columns(2)
             with col1:
-                año = st.number_input("Año", min_value=2000, max_value=2100, step=1)
+                #año = st.number_input("Año", min_value=2000, max_value=2100, step=1)
+                year_now = datetime.now().year
+                año = st.text_input(
+                    "Año",
+                    value=str(year_now),
+                    disabled=True
+                )
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
                 #vigencia = st.text_input("Vigencia")
                 vigencia = st.selectbox("Vigencia", ["Sí", "No"])
