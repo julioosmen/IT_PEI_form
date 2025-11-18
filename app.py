@@ -11,7 +11,7 @@ def cargar_unidades_ejecutoras():
 
 df_ue = cargar_unidades_ejecutoras()
 
-st.subheader(" Buscar Unidad Ejecutora")
+st.subheader(" Buscar Unidad Ejecutora (UE)")
 
 # Crear opciones combinadas para búsqueda
 opciones = [
@@ -21,7 +21,7 @@ opciones = [
 
 # Selectbox con búsqueda tanto por código como por nombre
 seleccion = st.selectbox(
-    "🔍 Selecciona o escribe el código o nombre del pliego",
+    "🔍 Selecciona o escribe el código o nombre de la unidad ejecutora",
     opciones,
     index=None,
     placeholder="Escribe el código o nombre..."
