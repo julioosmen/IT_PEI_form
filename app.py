@@ -102,7 +102,7 @@ if "modo" in st.session_state and seleccion:
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
                 #vigencia = st.text_input("Vigencia")
                 vigencia = st.selectbox("Vigencia", ["Sí", "No"])
-                tipo_pei = st.selectbox("Tipo de PEI", ["Actualizado", "Ampliado", "Formulado", "Modificado"])
+                tipo_pei = st.selectbox("Tipo de PEI", ["Actualizado", "Ampliado", "Formulado"])
             with col2:
                 estado = st.selectbox("Estado", [
                     "Emitido",
