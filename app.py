@@ -57,15 +57,15 @@ if seleccion:
 
         with colA:
             #st.metric("Sector", sector)
-            st.markdown(f"<p style='font-size:13px'><b>Sector:</b><br>{sector}</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='font-size:9px'><b>Sector:</b><br>{sector}</p>", unsafe_allow_html=True)
 
         with colB:
             #st.metric("Nivel de gobierno", nivel_gob)
-            st.markdown(f"<p style='font-size:13px'><b>Nivel de Gobierno:</b><br>{nivel_gob}</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='font-size:9px'><b>Nivel de Gobierno:</b><br>{nivel_gob}</p>", unsafe_allow_html=True)
 
         with colC:
             #st.metric("Responsable Institucional", responsable_inst)
-            st.markdown(f"<p style='font-size:13px'><b>Responsable Inst.:</b><br>{responsable_inst}</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='font-size:9px'><b>Responsable Inst.:</b><br>{responsable_inst}</p>", unsafe_allow_html=True)
 
     else:
         st.error("No se encontró información adicional para este código.")
