@@ -59,7 +59,7 @@ if seleccion:
                 font-size: 14px;
                 color: #333;
             ">
-                     Información del pliego seleccionado
+                    **Información del pliego seleccionado**
 
                     Sector: {sector}
                     Nivel de gobierno: {nivel_gob}
