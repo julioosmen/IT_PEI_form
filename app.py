@@ -87,7 +87,7 @@ if "modo" in st.session_state and seleccion:
     
         with st.form("form_pei"):
     
-            st.write("## 🔹 Datos de identificación y revisión")
+            st.write("## Datos de identificación y revisión")
     
             col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     
@@ -161,7 +161,7 @@ if "modo" in st.session_state and seleccion:
             # =========================================
             #     PARTE 2 — DATOS DEL INFORME TÉCNICO
             # =========================================
-            st.write("## 🔹 Datos del Informe Técnico")
+            st.write("## Datos del Informe Técnico")
     
             colA, colB, colC = st.columns(3)
     
