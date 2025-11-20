@@ -47,6 +47,7 @@ if seleccion:
         nivel_gob = fila["NG"].iloc[0]
         responsable = fila["Responsable_Institucional"].iloc[0] if "Responsable_Institucional" in fila.columns else "No registrado"
 
+        # TARJETA HTML
         st.markdown(
             f"""
             <div style="
@@ -61,15 +62,15 @@ if seleccion:
                 <div style="font-weight:600; margin-bottom:8px;">
                     📌 Información del pliego seleccionado
                 </div>
-        
+
                 <div style="margin-bottom:4px;">
                     <strong>Sector:</strong> {sector}
                 </div>
-        
+
                 <div style="margin-bottom:4px;">
                     <strong>Nivel de gobierno:</strong> {nivel_gob}
                 </div>
-        
+
                 <div style="margin-bottom:2px;">
                     <strong>Responsable institucional:</strong> {responsable}
                 </div>
