@@ -118,8 +118,8 @@ if "modo" in st.session_state and seleccion:
                     "Subsanación del pliego"
                 ])
                 # Obtener nivel de gobierno de la UE seleccionada
-                #nivel_gob = df_ue.loc[df_ue["codigo"] == codigo, "NG1"].iloc[0]
-                nivel_series = df_ue.loc[df_ue["codigo"] == codigo, "NG1"].values
+                #nivel_gob = df_ue.loc[df_ue["codigo"] == codigo, "NG"].iloc[0]
+                nivel_series = df_ue.loc[df_ue["codigo"] == codigo, "NG"].values
 
                 if len(nivel_series) == 0:
                     st.error("No se encontró nivel de gobierno en el archivo de unidades ejecutoras.")
