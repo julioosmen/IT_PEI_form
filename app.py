@@ -47,35 +47,37 @@ if seleccion:
         nivel_gob = fila["NG"].iloc[0]
         responsable = fila["Responsable_Institucional"].iloc[0] if "Responsable_Institucional" in fila.columns else "No registrado"
 
-        st.markdown(
-            f"""
-            <div style="
-                padding: 12px 16px;
-                border-radius: 10px;
-                background-color: #ffffff;
-                border: 1px solid #E0E0E0;
-                box-shadow: 0px 1px 3px rgba(0,0,0,0.08);
-                margin-top:12px;
-                font-size:14px;
-                line-height:1.4;
-            ">
-                <div style="font-size:15px; font-weight:600; margin-bottom:8px;">
-                    📌 Información del pliego seleccionado
-                </div>
-        
-                <div style="margin-bottom:4px;">
-                    <strong>Sector:</strong> {sector}
-                </div>
-                <div style="margin-bottom:4px;">
-                    <strong>Nivel de gobierno:</strong> {nivel_gob}
-                </div>
-                <div>
-                    <strong>Responsable institucional:</strong> {responsable}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+st.markdown(
+    f"""
+    <div style="
+        padding: 14px 18px;
+        border-radius: 10px;
+        background-color: #F5F7FA;
+        margin-top: 10px;
+        border: 1px solid #E0E6ED;
+        font-size: 14px;
+        color: #333;
+    ">
+        <div style="font-weight:600; margin-bottom:8px;">
+            📌 Información del pliego seleccionado
+        </div>
+
+        <div style="margin-bottom:4px;">
+            <strong>Sector:</strong> {sector}
+        </div>
+
+        <div style="margin-bottom:4px;">
+            <strong>Nivel de gobierno:</strong> {nivel_gob}
+        </div>
+
+        <div style="margin-bottom:2px;">
+            <strong>Responsable institucional:</strong> {responsable}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
  
     col1, col2 = st.columns(2)
     with col1:
