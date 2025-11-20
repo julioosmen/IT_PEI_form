@@ -37,7 +37,8 @@ seleccion = st.selectbox(
 # ================================
 if seleccion:
     #st.success(f"Seleccionaste: {seleccion}")
-    codigo = seleccion.split(" - ")[0]
+    #codigo = seleccion.split(" - ")[0]
+    codigo = seleccion.split(" - ")[0].strip()  # ✔️ ahora sí existe
     # Filtrar la fila correspondiente
     fila = df_ue[df_ue["codigo"] == codigo]
 
