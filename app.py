@@ -85,32 +85,23 @@ if "modo" in st.session_state and seleccion:
     elif st.session_state["modo"] == "nuevo":
         st.subheader("📝 Crear nuevo registro PEI")
     
-        # ----------------------------------------
-        # FORMULARIO COMPLETO
-        # ----------------------------------------
         with st.form("form_pei"):
     
-            st.write("### Datos de identificación")
+            st.write("## 🔹 Datos de identificación y revisión")
     
-            col1, col2 = st.columns(2)
+            col1, col2, col3, col4 = st.columns([1, 1, 1.3, 1])
+    
+            # ======================
+            # col1
+            # ======================
             with col1:
-                #año = st.number_input("Año", min_value=2000, max_value=2100, step=1)
                 year_now = datetime.now().year
-                año = st.text_input(
-                    "Año",
-                    value=str(year_now),
-                    disabled=True
-                )
-                periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
-                #vigencia = st.text_input("Vigencia")
-                vigencia = st.selectbox("Vigencia", ["Sí", "No"])
-                tipo_pei = st.selectbox("Tipo de PEI", ["Actualizado", "Ampliado", "Formulado"])
-            with col2:
-                estado = st.selectbox("Estado", [
-                    "Emitido",
-                    "En proceso"
+                año = st.text_input("Año", value=str(year_now), disabled=True)
+    
+                tipo_pei = st.selectbox("Tipo de PEI", [
+                    "Actualizado", "Ampliado", "Formulado"
                 ])
-                cantidad_revisiones = st.number_input("Cantidad de revisiones", min_value=0, step=1)
+    
                 etapa_revision = st.selectbox("Etapas de revisión", [
                     "IT Emitido",
                     "Para emisión de IT",
@@ -119,97 +110,108 @@ if "modo" in st.session_state and seleccion:
                     "Revisión DNPE",
                     "Subsanación del pliego"
                 ])
-                # Obtener nivel de gobierno de la UE seleccionada
-                #nivel_gob = df_ue.loc[df_ue["codigo"] == codigo, "NG"].iloc[0]
-                nivel_series = df_ue.loc[df_ue["codigo"] == codigo, "NG"].values
-
-                if len(nivel_series) == 0:
-                    st.error("No se encontró nivel de gobierno en el archivo de pliegos.")
-                    st.stop()
-                
-                nivel_gob = nivel_series[0]
-
-                # ===========================================
-                # Selección de articulación según nivel gobierno
-                # ===========================================
-                
-                if nivel_gob == "Gobierno regional":
+    
+            # ======================
+            # col2
+            # ======================
+            with col2:
+                fecha_recepcion = st.date_input("Fecha de recepción")
+    
+                # Nivel de gobierno
+                nivel = df_ue.loc[df_ue["codigo"] == codigo, "NG"].values[0]
+    
+                if nivel == "Gobierno regional":
                     opciones_articulacion = ["PEDN 2050", "PDRC"]
-                
-                elif nivel_gob == "Gobierno nacional":
+                elif nivel == "Gobierno nacional":
                     opciones_articulacion = ["PEDN 2050", "PESEM NO vigente", "PESEM vigente"]
-                
-                elif nivel_gob in ["Municipalidad distrital", "Municipalidad provincial"]:
+                elif nivel in ["Municipalidad distrital", "Municipalidad provincial"]:
                     opciones_articulacion = ["PEDN 2050", "PDRC", "PDLC Provincial", "PDLC Distrital"]
-                
                 else:
-                    #opciones_articulacion = ["PEDN 2050"]  # fallback por si acaso
                     opciones_articulacion = []
-                # Ahora el selectbox usa SOLO las opciones válidas
+    
                 articulacion = st.selectbox("Articulación", opciones_articulacion)
-
-                
-                
-                #articulacion = st.selectbox("Articulación", [
-                    #"PDLC Distrital",
-                    #"PDLC Provincial",
-                    #"PDRC",
-                    #"PEDN 2050",
-                    #"PESEM NO vigente",
-                    #"PESEM vigente"
-                #])
-            
-                st.write("### Fechas y documentos")
-        
-                col3, col4 = st.columns(2)
-                with col3:
-                    fecha_recepcion = st.date_input("Fecha de recepción")
-                    fecha_derivacion = st.date_input("Fecha de derivación")
-                with col4:
-                    fecha_it = st.date_input("Fecha de I.T")
-                    numero_it = st.text_input("Número de I.T")
-        
-                comentario = st.text_area("Comentario adicional / Emisor de IT")
-                #responsable = st.text_input("Responsable Institucional")
-                responsables = pd.read_excel("data/responsables.xlsx")["nombre"].tolist()
-                
-                responsable = st.selectbox(
-                    "Responsable Institucional",
-                    responsables,
-                    index=None,
-                    placeholder="Escribe tu nombre..."
-                )
-                
-                # Submit
-                submitted = st.form_submit_button("💾 Guardar Registro")
-        
-                if submitted:
-                    codigo = seleccion.split(" - ")[0]
-                    nombre_ue = seleccion.split(" - ")[1]
-        
-                    data = {
-                        "codigo_ue": codigo,
-                        "nombre_ue": nombre_ue,
-                        "año": año,
-                        "periodo": periodo,
-                        "vigencia": vigencia,
-                        "tipo_pei": tipo_pei,
-                        "estado": estado,
-                        "responsable_institucional": responsable,
-                        "cantidad_revisiones": cantidad_revisiones,
-                        "fecha_recepcion": str(fecha_recepcion),
-                        "fecha_derivacion": str(fecha_derivacion),
-                        "etapa_revision": etapa_revision,
-                        "comentario": comentario,
-                        "articulacion": articulacion,
-                        "expediente": "",
-                        "fecha_it": str(fecha_it),
-                        "numero_it": numero_it
-                    }
-        
-                    resp = supabase.table("pei").insert(data).execute()
-        
-                    if resp.data:
-                        st.success("Registro guardado correctamente 🎉")
-                    else:
-                        st.error("Hubo un problema al guardar el registro")
+    
+                fecha_derivacion = st.date_input("Fecha de derivación")
+    
+            # ======================
+            # col3
+            # ======================
+            with col3:
+                periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
+                cantidad_revisiones = st.number_input("Cantidad de revisiones", min_value=0, step=1)
+    
+                comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
+    
+            # ======================
+            # col4
+            # ======================
+            with col4:
+                vigencia = st.selectbox("Vigencia", ["Sí", "No"])
+    
+                estado = st.selectbox("Estado", [
+                    "Emitido",
+                    "En proceso"
+                ])
+    
+            # =========================================
+            #     PARTE 2 — DATOS DEL INFORME TÉCNICO
+            # =========================================
+            st.write("## 🔹 Datos del Informe Técnico")
+    
+            colA, colB, colC = st.columns(3)
+    
+            with colA:
+                expediente = st.text_input("Expediente (SGD)")
+    
+            with colB:
+                fecha_it = st.date_input("Fecha de I.T")
+                fecha_oficio = st.date_input("Fecha del Oficio")
+    
+            with colC:
+                numero_it = st.text_input("Número de I.T")
+                numero_oficio = st.text_input("Número del Oficio")
+    
+            # ======================
+            # Responsable
+            # ======================
+            responsables = pd.read_excel("data/responsables.xlsx")["nombre"].tolist()
+    
+            responsable = st.selectbox(
+                "Responsable Institucional",
+                responsables,
+                index=None,
+                placeholder="Escribe tu nombre..."
+            )
+    
+            # ======================
+            # SUBMIT
+            # ======================
+            submitted = st.form_submit_button("💾 Guardar Registro")
+    
+            if submitted:
+                nombre_ue = seleccion.split(" - ")[1]
+    
+                nuevo = {
+                    "codigo_ue": codigo,
+                    "nombre_ue": nombre_ue,
+                    "año": año,
+                    "periodo": periodo,
+                    "vigencia": vigencia,
+                    "tipo_pei": tipo_pei,
+                    "estado": estado,
+                    "responsable_institucional": responsable,
+                    "cantidad_revisiones": cantidad_revisiones,
+                    "fecha_recepcion": str(fecha_recepcion),
+                    "fecha_derivacion": str(fecha_derivacion),
+                    "etapa_revision": etapa_revision,
+                    "comentario": comentario,
+                    "articulacion": articulacion,
+                    "expediente": expediente,
+                    "fecha_it": str(fecha_it),
+                    "numero_it": numero_it,
+                    "fecha_oficio": str(fecha_oficio),
+                    "numero_oficio": numero_oficio
+                }
+    
+                st.session_state["nuevo_registro"] = nuevo
+                st.success("✔ Registro listo para guardar en Excel")
