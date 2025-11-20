@@ -207,14 +207,14 @@ if "modo" in st.session_state and seleccion:
             # ======================
             # Responsable
             # ======================
-            responsables = pd.read_excel("data/responsables.xlsx")["nombre"].tolist()
+            #responsables = pd.read_excel("data/responsables.xlsx")["nombre"].tolist()
     
-            responsable = st.selectbox(
-                "Responsable Institucional",
-                responsables,
-                index=None,
-                placeholder="Escribe tu nombre..."
-            )
+            #responsable = st.selectbox(
+                #"Responsable Institucional",
+                #responsables,
+                #index=None,
+                #placeholder="Escribe tu nombre..."
+            #)
     
             # ======================
             # SUBMIT
