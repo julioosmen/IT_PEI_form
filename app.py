@@ -89,7 +89,7 @@ if "modo" in st.session_state and seleccion:
     
             st.write("## 🔹 Datos de identificación y revisión")
     
-            col1, col2, col3, col4 = st.columns([1, 1, 1.3, 1])
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     
             # ======================
             # col1
@@ -140,8 +140,13 @@ if "modo" in st.session_state and seleccion:
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
                 cantidad_revisiones = st.number_input("Cantidad de revisiones", min_value=0, step=1)
     
-                comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
-    
+                #comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
+
+            # Ahora creamos un bloque más ancho (col3 + col4 fusionadas)
+            col_big1, col_big2 = st.columns([2, 2])  # duplicamos el ancho
+            
+            with col_big1:
+                comentario = st.text_area("Comentario adicional / Emisor de IT", height=150)
             # ======================
             # col4
             # ======================
