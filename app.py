@@ -89,8 +89,9 @@ if "modo" in st.session_state and seleccion:
     
             st.write("## Datos de identificación y revisión")
     
-            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-    
+            #col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+            col1, col2, col3, col4 = st.columns(4, gap="medium")
+
             # ======================
             # col1
             # ======================
@@ -142,11 +143,6 @@ if "modo" in st.session_state and seleccion:
     
                 #comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
 
-            # Ahora creamos un bloque más ancho (col3 + col4 fusionadas)
-            col_big1, col_big2 = st.columns([2, 2])  # duplicamos el ancho
-            
-            with col_big1:
-                comentario = st.text_area("Comentario adicional / Emisor de IT", height=150)
             # ======================
             # col4
             # ======================
@@ -157,7 +153,23 @@ if "modo" in st.session_state and seleccion:
                     "Emitido",
                     "En proceso"
                 ])
-    
+
+            # ======================================================
+            # === Comentario ocupa col3 + col4
+            # ======================================================
+        
+            col_big1, col_big2 = st.columns([1, 1])
+        
+            with col_big1:
+                comentario = st.text_area(
+                    "Comentario adicional / Emisor de IT",
+                    height=180
+                )
+        
+            # col_big2 queda vacío pero mantiene el espacio visual
+            with col_big2:
+                st.write("")  # Solo para mantener estructura
+        
             # =========================================
             #     PARTE 2 — DATOS DEL INFORME TÉCNICO
             # =========================================
