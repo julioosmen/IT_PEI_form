@@ -16,7 +16,7 @@ df_ue["NG"] = df_ue["NG"].astype(str).str.strip()
 
 #st.image("logo.png", width=160)   # Mostrar logo centrado - Ajusta el tamaño si deseas
 st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
-st.subheader(" Buscar Pliego")
+#st.subheader(" Buscar Pliego")
 
 # Crear opciones combinadas para búsqueda
 opciones = [
