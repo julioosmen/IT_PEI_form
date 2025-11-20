@@ -1,3 +1,4 @@
+import re
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -171,6 +172,11 @@ if "modo" in st.session_state and seleccion:
             # ======================
             with col3:
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
+                # Regex: 4 dígitos, guion, 4 dígitos
+                pattern = r"^\d{4}-\d{4}$"
+                
+                if periodo and not re.match(pattern, periodo):
+                    st.error("⚠️ Formato inválido. Usa el formato: 2025-2027")
                 cantidad_revisiones = st.number_input("Cantidad de revisiones", min_value=0, step=1)
                 
                 comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
