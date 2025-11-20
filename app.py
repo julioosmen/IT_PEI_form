@@ -89,8 +89,8 @@ if "modo" in st.session_state and seleccion:
     
             st.write("## Datos de identificación y revisión")
     
-            #col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-            col1, col2, col3, col4 = st.columns(4, gap="medium")
+            col1, col2, col3, col4 = st.columns([1, 1, 1.3, 1])
+            #col1, col2, col3, col4 = st.columns(4, gap="medium")
 
             # ======================
             # col1
@@ -140,8 +140,8 @@ if "modo" in st.session_state and seleccion:
             with col3:
                 periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
                 cantidad_revisiones = st.number_input("Cantidad de revisiones", min_value=0, step=1)
-    
-                #comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
+                
+                comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
 
             # ======================
             # col4
@@ -153,23 +153,7 @@ if "modo" in st.session_state and seleccion:
                     "Emitido",
                     "En proceso"
                 ])
-
-            # ======================================================
-            # === Comentario ocupa col3 + col4
-            # ======================================================
-        
-            col_big1, col_big2 = st.columns([1, 1])
-        
-            with col_big1:
-                comentario = st.text_area(
-                    "Comentario adicional / Emisor de IT",
-                    height=180
-                )
-        
-            # col_big2 queda vacío pero mantiene el espacio visual
-            with col_big2:
-                st.write("")  # Solo para mantener estructura
-        
+     
             # =========================================
             #     PARTE 2 — DATOS DEL INFORME TÉCNICO
             # =========================================
