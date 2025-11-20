@@ -36,8 +36,34 @@ seleccion = st.selectbox(
 # Opciones
 # ================================
 if seleccion:
-    st.success(f"Seleccionaste: {seleccion}")
+    #st.success(f"Seleccionaste: {seleccion}")
+    # Filtrar la fila correspondiente
+    fila = df_ue[df_ue["codigo"] == codigo]
 
+    if not fila.empty:
+        sector = fila["sector"].iloc[0] if "sector" in fila.columns else "No registrado"
+        nivel_gob = fila["NG"].iloc[0] if "NG" in fila.columns else "No registrado"
+        responsable_inst = (
+            fila["Responsable_Institucional"].iloc[0]
+            if "Responsable_Institucional" in fila.columns
+            else "No registrado"
+        )
+
+        st.markdown("### 🏛️ Información del pliego seleccionado")
+
+        colA, colB, colC = st.columns(3)
+
+        with colA:
+            st.metric("Sector", sector)
+
+        with colB:
+            st.metric("Nivel de gobierno", nivel_gob)
+
+        with colC:
+            st.metric("Responsable Institucional", responsable_inst)
+    else:
+        st.error("No se encontró información adicional para este código.")
+    
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📌 Historial PEI"):
