@@ -11,6 +11,8 @@ def cargar_unidades_ejecutoras():
     return pd.read_excel("data/unidades_ejecutoras.xlsx", engine="openpyxl")
 
 df_ue = cargar_unidades_ejecutoras()
+df_ue["codigo"] = df_ue["codigo"].astype(str).str.strip()
+df_ue["NG"] = df_ue["NG"].astype(str).str.strip()
 
 #st.image("logo.png", width=160)   # Mostrar logo centrado - Ajusta el tamaño si deseas
 st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
@@ -122,7 +124,7 @@ if "modo" in st.session_state and seleccion:
                 nivel_series = df_ue.loc[df_ue["codigo"] == codigo, "NG"].values
 
                 if len(nivel_series) == 0:
-                    st.error("No se encontró nivel de gobierno en el archivo de unidades ejecutoras.")
+                    st.error("No se encontró nivel de gobierno en el archivo de pliegos.")
                     st.stop()
                 
                 nivel_gob = nivel_series[0]
