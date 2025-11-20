@@ -67,12 +67,12 @@ if "modo" in st.session_state and seleccion:
         historial = pd.read_excel("data/historial_it_pei.xlsx")
     
         #df_ue = historial[historial["codigo_ue"] == codigo]
-        df_ue = historial[historial["codigo_ue"].astype(str) == str(codigo)]
+        df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
 
-        if df_ue.empty:
+        if df_historial.empty:
             st.info("No existe historial para este pliego.")
         else:
-            ultimo = df_ue.sort_values("fecha_recepcion", ascending=False).iloc[0]
+            ultimo = df_historial.sort_values("fecha_recepcion", ascending=False).iloc[0]
             st.success("Último registro encontrado:")
             st.json(ultimo.to_dict())
 
