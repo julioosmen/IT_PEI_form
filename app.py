@@ -117,15 +117,38 @@ if "modo" in st.session_state and seleccion:
                     "Revisión DNPE",
                     "Subsanación del pliego"
                 ])
-                #articulacion = st.text_input("Articulación")
-                articulacion = st.selectbox("Articulación", [
-                    "PDLC Distrital",
-                    "PDLC Provincial",
-                    "PDRC",
-                    "PEDN 2050",
-                    "PESEM NO vigente",
-                    "PESEM vigente"
-                ])
+                # Obtener nivel de gobierno de la UE seleccionada
+                nivel_gob = df_ue.loc[df_ue["codigo"] == codigo, "NG1"].iloc[0]
+                
+                # ===========================================
+                # Selección de articulación según nivel gobierno
+                # ===========================================
+                
+                if nivel_gob == "Gobierno regional":
+                    opciones_articulacion = ["PEDN 2050", "PDRC"]
+                
+                elif nivel_gob == "Gobierno nacional":
+                    opciones_articulacion = ["PEDN 2050", "PESEM NO vigente", "PESEM vigente"]
+                
+                elif nivel_gob in ["Municipalidad distrital", "Municipalidad provincial"]:
+                    opciones_articulacion = ["PEDN 2050", "PDRC", "PDLC Provincial", "PDLC Distrital"]
+                
+                else:
+                    opciones_articulacion = ["PEDN 2050"]  # fallback por si acaso
+                
+                # Ahora el selectbox usa SOLO las opciones válidas
+                articulacion = st.selectbox("Articulación", opciones_articulacion)
+
+                
+                
+                #articulacion = st.selectbox("Articulación", [
+                    #"PDLC Distrital",
+                    #"PDLC Provincial",
+                    #"PDRC",
+                    #"PEDN 2050",
+                    #"PESEM NO vigente",
+                    #"PESEM vigente"
+                #])
             
             st.write("### Fechas y documentos")
     
