@@ -49,20 +49,21 @@ if seleccion:
 
         st.markdown(
             f"""
-            <div style="padding: 8px 12px; 
-                        border-radius: 8px; 
+            <div style="padding: 12px; 
+                        border-radius: 10px; 
                         background-color: #F7F7F7; 
-                        margin-top:10px;
-                        font-size:14px;">
-                <b>📌 Información del pliego seleccionado</b><br><br>
-
-                <b>Sector:</b> {sector}<br>
-                <b>Nivel de gobierno:</b> {nivel_gob}<br>
-                <b>Responsable institucional:</b> {responsable}
+                        margin-top: 10px;
+                        font-size: 14px;
+                        line-height: 1.4;">
+                <strong>📌 Información del pliego seleccionado</strong><br><br>
+        
+                <strong>Sector:</strong> {sector}<br>
+                <strong>Nivel de gobierno:</strong> {nivel_gob}<br>
+                <strong>Responsable institucional:</strong> {responsable}
             </div>
             """,
             unsafe_allow_html=True
-        )    
+        )   
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📌 Historial PEI"):
