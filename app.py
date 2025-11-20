@@ -118,8 +118,15 @@ if "modo" in st.session_state and seleccion:
                     "Subsanación del pliego"
                 ])
                 # Obtener nivel de gobierno de la UE seleccionada
-                nivel_gob = df_ue.loc[df_ue["codigo"] == codigo, "NG1"].iloc[0]
+                #nivel_gob = df_ue.loc[df_ue["codigo"] == codigo, "NG1"].iloc[0]
+                nivel_series = df_ue.loc[df_ue["codigo"] == codigo, "NG1"].values
+
+                if len(nivel_series) == 0:
+                    st.error("No se encontró nivel de gobierno en el archivo de unidades ejecutoras.")
+                    st.stop()
                 
+                nivel_gob = nivel_series[0]
+
                 # ===========================================
                 # Selección de articulación según nivel gobierno
                 # ===========================================
@@ -134,8 +141,8 @@ if "modo" in st.session_state and seleccion:
                     opciones_articulacion = ["PEDN 2050", "PDRC", "PDLC Provincial", "PDLC Distrital"]
                 
                 else:
-                    opciones_articulacion = ["PEDN 2050"]  # fallback por si acaso
-                
+                    #opciones_articulacion = ["PEDN 2050"]  # fallback por si acaso
+                    opciones_articulacion = []
                 # Ahora el selectbox usa SOLO las opciones válidas
                 articulacion = st.selectbox("Articulación", opciones_articulacion)
 
