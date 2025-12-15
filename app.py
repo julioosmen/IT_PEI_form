@@ -5,6 +5,81 @@ from datetime import datetime
 #from supabase import create_client
 
 # =====================================
+# ✅ PARTE INTEGRADA (colocar al inicio)
+# =====================================
+#HISTORIAL_PATH = "data/historial_it_pei.xlsx"
+FORM_DEFAULTS = {
+    "tipo_pei": "Formulado",
+    "etapa_revision": "IT Emitido",
+    "fecha_recepcion": None,
+    "articulacion": "",
+    "fecha_derivacion": None,
+    "periodo": "",
+    "cantidad_revisiones": 0,
+    "comentario": "",
+    "vigencia": "Sí",
+    "estado": "En proceso",
+    "expediente": "",
+    "fecha_it": None,
+    "fecha_oficio": None,
+    "numero_it": "",
+    "numero_oficio": "",
+}
+
+def init_form_state():
+    st.session_state.setdefault("form_pei", FORM_DEFAULTS.copy())
+
+def reset_form_state():
+    st.session_state["form_pei"] = FORM_DEFAULTS.copy()
+
+def index_of(options, value, fallback=0):
+    try:
+        return options.index(value)
+    except Exception:
+        return fallback
+
+def set_form_state_from_row(row: pd.Series):
+    """Carga un registro del historial al estado del formulario."""
+    form = FORM_DEFAULTS.copy()
+
+    def _safe_str(x):
+        return "" if pd.isna(x) else str(x)
+
+    def _safe_int(x):
+        try:
+            return int(x)
+        except Exception:
+            return 0
+
+    def _safe_date(x):
+        if pd.isna(x) or x is None or str(x).strip() == "":
+            return None
+        try:
+            return pd.to_datetime(x).date()
+        except Exception:
+            return None
+
+    # Mapeo: columnas del excel -> claves del formulario
+    form["tipo_pei"] = _safe_str(row.get("tipo_pei", FORM_DEFAULTS["tipo_pei"])) or FORM_DEFAULTS["tipo_pei"]
+    form["etapa_revision"] = _safe_str(row.get("etapa_revision", FORM_DEFAULTS["etapa_revision"])) or FORM_DEFAULTS["etapa_revision"]
+    form["fecha_recepcion"] = _safe_date(row.get("fecha_recepcion"))
+    form["articulacion"] = _safe_str(row.get("articulacion", ""))
+    form["fecha_derivacion"] = _safe_date(row.get("fecha_derivacion"))
+    form["periodo"] = _safe_str(row.get("periodo", ""))
+    form["cantidad_revisiones"] = _safe_int(row.get("cantidad_revisiones", 0))
+    form["comentario"] = _safe_str(row.get("comentario", ""))
+    form["vigencia"] = _safe_str(row.get("vigencia", FORM_DEFAULTS["vigencia"])) or FORM_DEFAULTS["vigencia"]
+    form["estado"] = _safe_str(row.get("estado", FORM_DEFAULTS["estado"])) or FORM_DEFAULTS["estado"]
+
+    form["expediente"] = _safe_str(row.get("expediente", ""))
+    form["fecha_it"] = _safe_date(row.get("fecha_it"))
+    form["numero_it"] = _safe_str(row.get("numero_it", ""))
+    form["fecha_oficio"] = _safe_date(row.get("fecha_oficio"))
+    form["numero_oficio"] = _safe_str(row.get("numero_oficio", ""))
+
+    st.session_state["form_pei"] = form
+
+# =====================================
 # 🏛️ Carga y búsqueda de unidades ejecutoras
 # =====================================
 @st.cache_data
@@ -24,6 +99,7 @@ opciones = [
     f"{str(row['codigo'])} - {row['nombre']}"
     for _, row in df_ue.iterrows()
 ]
+
 
 # Selectbox con búsqueda tanto por código como por nombre
 seleccion = st.selectbox(
@@ -84,31 +160,58 @@ if seleccion:
 # Procesamiento según opción
 # ================================
 if "modo" in st.session_state and seleccion:
-    codigo = seleccion.split(" - ")[0]
+    codigo = seleccion.split(" - ")[0].strip()
 
     if st.session_state["modo"] == "historial":
         st.subheader("📌 Último PEI registrado")
 
-        historial = pd.read_excel("data/historial_it_pei.xlsx")
-        df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
+        try:
+            historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
+        except FileNotFoundError:
+            st.error(f"No se encontró el archivo: {HISTORIAL_PATH}")
+            historial = pd.DataFrame()
 
-        if df_historial.empty:
-            st.info("No existe historial para este pliego.")
+        if historial.empty:
+            st.info("No hay historial disponible.")
         else:
-            ultimo = df_historial.sort_values("fecha_recepcion", ascending=False).iloc[0]
-            st.success("Último registro encontrado:")
-            st.json(ultimo.to_dict())
+            df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
+
+            if df_historial.empty:
+                st.info("No existe historial para este pliego.")
+            else:
+                # Asegurar orden por fecha
+                if "fecha_recepcion" in df_historial.columns:
+                    df_historial = df_historial.copy()
+                    df_historial["fecha_recepcion"] = pd.to_datetime(df_historial["fecha_recepcion"], errors="coerce")
+
+                ultimo = df_historial.sort_values("fecha_recepcion", ascending=False).iloc[0]
+                st.success("Último registro encontrado.")
+
+                colx, coly = st.columns([1, 2])
+                with colx:
+                    if st.button("⬇️ Cargar este registro al formulario", type="primary"):
+                        init_form_state()
+                        set_form_state_from_row(ultimo)
+                        st.session_state["modo"] = "nuevo"   # Reutiliza el mismo formulario
+                        st.rerun()
+
+                with coly:
+                    st.caption("Vista rápida del registro (solo verificación):")
+                    st.json(ultimo.to_dict())
 
     elif st.session_state["modo"] == "nuevo":
         st.subheader("📝 Crear nuevo registro PEI")
+    
+        # ✅ Asegura que exista el estado del formulario (precarga desde historial)
+        init_form_state()
+        form = st.session_state["form_pei"]
     
         with st.form("form_pei"):
     
             st.write("## Datos de identificación y revisión")
     
             col1, col2, col3, col4 = st.columns([1, 1, 1.3, 1])
-            #col1, col2, col3, col4 = st.columns(4, gap="medium")
-
+    
             # ======================
             # col1
             # ======================
@@ -116,24 +219,35 @@ if "modo" in st.session_state and seleccion:
                 year_now = datetime.now().year
                 año = st.text_input("Año", value=str(year_now), disabled=True)
     
-                tipo_pei = st.selectbox("Tipo de PEI", [
-                    "Formulado", "Ampliado", "Actualizado"
-                ])
+                tipo_pei_opts = ["Formulado", "Ampliado", "Actualizado"]
+                tipo_pei = st.selectbox(
+                    "Tipo de PEI",
+                    tipo_pei_opts,
+                    index=index_of(tipo_pei_opts, form["tipo_pei"], 0)
+                )
     
-                etapa_revision = st.selectbox("Etapas de revisión", [
+                etapas_opts = [
                     "IT Emitido",
                     "Para emisión de IT",
                     "Revisión DNCP",
                     "Revisión DNSE",
                     "Revisión DNPE",
                     "Subsanación del pliego"
-                ])
+                ]
+                etapa_revision = st.selectbox(
+                    "Etapas de revisión",
+                    etapas_opts,
+                    index=index_of(etapas_opts, form["etapa_revision"], 0)
+                )
     
             # ======================
             # col2
             # ======================
             with col2:
-                fecha_recepcion = st.date_input("Fecha de recepción")
+                fecha_recepcion = st.date_input(
+                    "Fecha de recepción",
+                    value=form["fecha_recepcion"] if form["fecha_recepcion"] else datetime.now().date()
+                )
     
                 # Nivel de gobierno
                 nivel = df_ue.loc[df_ue["codigo"] == codigo, "NG"].values[0]
@@ -147,35 +261,61 @@ if "modo" in st.session_state and seleccion:
                 else:
                     opciones_articulacion = []
     
-                articulacion = st.selectbox("Articulación", opciones_articulacion)
+                articulacion = st.selectbox(
+                    "Articulación",
+                    opciones_articulacion,
+                    index=index_of(opciones_articulacion, form["articulacion"], 0) if opciones_articulacion else 0
+                )
     
-                fecha_derivacion = st.date_input("Fecha de derivación")
+                fecha_derivacion = st.date_input(
+                    "Fecha de derivación",
+                    value=form["fecha_derivacion"] if form["fecha_derivacion"] else datetime.now().date()
+                )
     
             # ======================
             # col3
             # ======================
             with col3:
-                periodo = st.text_input("Periodo PEI (ej: 2025-2027)")
-                # Regex: 4 dígitos, guion, 4 dígitos
+                periodo = st.text_input(
+                    "Periodo PEI (ej: 2025-2027)",
+                    value=form["periodo"]
+                )
+    
                 pattern = r"^\d{4}-\d{4}$"
-                
                 if periodo and not re.match(pattern, periodo):
                     st.error("⚠️ Formato inválido. Usa el formato: 2025-2027")
-                cantidad_revisiones = st.number_input("Cantidad de revisiones", min_value=0, step=1)
-                
-                comentario = st.text_area("Comentario adicional / Emisor de IT", height=140)
-
+    
+                cantidad_revisiones = st.number_input(
+                    "Cantidad de revisiones",
+                    min_value=0,
+                    step=1,
+                    value=int(form["cantidad_revisiones"] or 0)
+                )
+    
+                comentario = st.text_area(
+                    "Comentario adicional / Emisor de IT",
+                    height=140,
+                    value=form["comentario"]
+                )
+    
             # ======================
             # col4
             # ======================
             with col4:
-                vigencia = st.selectbox("Vigencia", ["Sí", "No"])
+                vigencia_opts = ["Sí", "No"]
+                vigencia = st.selectbox(
+                    "Vigencia",
+                    vigencia_opts,
+                    index=index_of(vigencia_opts, form["vigencia"], 0)
+                )
     
-                estado = st.selectbox("Estado", [
-                    "En proceso",
-                    "Emitido"
-                ])
-     
+                estado_opts = ["En proceso", "Emitido"]
+                estado = st.selectbox(
+                    "Estado",
+                    estado_opts,
+                    index=index_of(estado_opts, form["estado"], 0)
+                )
+    
             # =========================================
             #     PARTE 2 — DATOS DEL INFORME TÉCNICO
             # =========================================
@@ -184,27 +324,30 @@ if "modo" in st.session_state and seleccion:
             colA, colB, colC = st.columns(3)
     
             with colA:
-                expediente = st.text_input("Expediente (SGD)")
+                expediente = st.text_input(
+                    "Expediente (SGD)",
+                    value=form["expediente"]
+                )
     
             with colB:
-                fecha_it = st.date_input("Fecha de I.T")
-                fecha_oficio = st.date_input("Fecha del Oficio")
+                fecha_it = st.date_input(
+                    "Fecha de I.T",
+                    value=form["fecha_it"] if form["fecha_it"] else datetime.now().date()
+                )
+                fecha_oficio = st.date_input(
+                    "Fecha del Oficio",
+                    value=form["fecha_oficio"] if form["fecha_oficio"] else datetime.now().date()
+                )
     
             with colC:
-                numero_it = st.text_input("Número de I.T")
-                numero_oficio = st.text_input("Número del Oficio")
-    
-            # ======================
-            # Responsable
-            # ======================
-            #responsables = pd.read_excel("data/responsables.xlsx")["nombre"].tolist()
-    
-            #responsable = st.selectbox(
-                #"Responsable Institucional",
-                #responsables,
-                #index=None,
-                #placeholder="Escribe tu nombre..."
-            #)
+                numero_it = st.text_input(
+                    "Número de I.T",
+                    value=form["numero_it"]
+                )
+                numero_oficio = st.text_input(
+                    "Número del Oficio",
+                    value=form["numero_oficio"]
+                )
     
             # ======================
             # SUBMIT
@@ -212,7 +355,7 @@ if "modo" in st.session_state and seleccion:
             submitted = st.form_submit_button("💾 Guardar Registro")
     
             if submitted:
-                nombre_ue = seleccion.split(" - ")[1]
+                nombre_ue = seleccion.split(" - ")[1].strip()
     
                 nuevo = {
                     "codigo_ue": codigo,
