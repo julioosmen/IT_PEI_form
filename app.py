@@ -7,7 +7,7 @@ from datetime import datetime
 # =====================================
 # ✅ PARTE INTEGRADA (colocar al inicio)
 # =====================================
-#HISTORIAL_PATH = "data/historial_it_pei.xlsx"
+HISTORIAL_PATH = "data/historial_it_pei.xlsx"
 FORM_DEFAULTS = {
     "tipo_pei": "Formulado",
     "etapa_revision": "IT Emitido",
