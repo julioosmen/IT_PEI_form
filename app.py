@@ -89,19 +89,7 @@ if "modo" in st.session_state and seleccion:
     if st.session_state["modo"] == "historial":
         st.subheader("📌 Último PEI registrado")
 
-        #data = supabase.table("pei").select("*") \
-        #              .eq("codigo_ue", codigo) \
-        #              .order("id", desc=True) \
-        #              .limit(1).execute().data
-
-        #if data:
-        #    st.json(data[0])
-        #else:
-        #    st.info("No existe historial para esta UE.")
-
         historial = pd.read_excel("data/historial_it_pei.xlsx")
-    
-        #df_ue = historial[historial["codigo_ue"] == codigo]
         df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
 
         if df_historial.empty:
@@ -110,10 +98,6 @@ if "modo" in st.session_state and seleccion:
             ultimo = df_historial.sort_values("fecha_recepcion", ascending=False).iloc[0]
             st.success("Último registro encontrado:")
             st.json(ultimo.to_dict())
-
-    #elif st.session_state["modo"] == "nuevo":
-        #st.subheader("📝 Crear nuevo registro PEI")
-        #st.write("Aquí va tu formulario de nuevo PEI...")
 
     elif st.session_state["modo"] == "nuevo":
         st.subheader("📝 Crear nuevo registro PEI")
