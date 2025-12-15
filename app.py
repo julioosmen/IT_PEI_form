@@ -133,7 +133,7 @@ if "modo" in st.session_state and seleccion:
                 año = st.text_input("Año", value=str(year_now), disabled=True)
     
                 tipo_pei = st.selectbox("Tipo de PEI", [
-                    "Actualizado", "Ampliado", "Formulado"
+                    "Formulado", "Ampliado", "Actualizado"
                 ])
     
                 etapa_revision = st.selectbox("Etapas de revisión", [
@@ -187,9 +187,9 @@ if "modo" in st.session_state and seleccion:
             with col4:
                 vigencia = st.selectbox("Vigencia", ["Sí", "No"])
     
-                estado = st.selectbox("Estado", [
+                estado = st.selectbox("En proceso", [
                     "Emitido",
-                    "En proceso"
+                    "Estado"
                 ])
      
             # =========================================
