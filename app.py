@@ -187,9 +187,9 @@ if "modo" in st.session_state and seleccion:
             with col4:
                 vigencia = st.selectbox("Vigencia", ["Sí", "No"])
     
-                estado = st.selectbox("En proceso", [
-                    "Emitido",
-                    "Estado"
+                estado = st.selectbox("Estado", [
+                    "En proceso",
+                    "Emitido"
                 ])
      
             # =========================================
