@@ -338,30 +338,13 @@ if "modo" in st.session_state and seleccion:
                     index=index_of(vigencia_opts, form["vigencia"], 0)
                 )
     
-                #estado_opts = ["En proceso", "Emitido"]
-                #estado = st.selectbox(
-                #    "Estado",
-                #    estado_opts,
-                #    index=index_of(estado_opts, form["estado"], 0)
-                #)
-
-                # Estado: "Emitido" solo si puede_emitir == True
-                estado_opts = ["En proceso"] + (["Emitido"] if puede_emitir else [])
-                
-                # Si el valor precargado era "Emitido" pero ya no cumple, cae a "En proceso"
-                estado_default = form["estado"]
-                if estado_default == "Emitido" and not puede_emitir:
-                    estado_default = "En proceso"
-                
+                estado_opts = ["En proceso", "Emitido"]
                 estado = st.selectbox(
                     "Estado",
                     estado_opts,
-                    index=index_of(estado_opts, estado_default, 0)
+                    index=index_of(estado_opts, form["estado"], 0)
                 )
-                
-                if not puede_emitir:
-                    st.caption("Para seleccionar **Emitido** debes registrar: Expediente (SGD), Fecha de I.T y Número de I.T.")
-            
+      
             # =========================================
             #     PARTE 2 — DATOS DEL INFORME TÉCNICO
             # =========================================
@@ -402,6 +385,11 @@ if "modo" in st.session_state and seleccion:
             
             puede_emitir = expediente_ok and fecha_it_ok and numero_it_ok
 
+            if estado == "Emitido" and not puede_emitir:
+                st.caption(
+                    "⚠️ Para marcar como *Emitido* debes registrar: "
+                    "Expediente (SGD), Fecha de I.T y Número de I.T."
+                )
             
             # ======================
             # SUBMIT
