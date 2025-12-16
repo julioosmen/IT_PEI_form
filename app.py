@@ -338,13 +338,30 @@ if "modo" in st.session_state and seleccion:
                     index=index_of(vigencia_opts, form["vigencia"], 0)
                 )
     
-                estado_opts = ["En proceso", "Emitido"]
+                #estado_opts = ["En proceso", "Emitido"]
+                #estado = st.selectbox(
+                #    "Estado",
+                #    estado_opts,
+                #    index=index_of(estado_opts, form["estado"], 0)
+                #)
+
+                # Estado: "Emitido" solo si puede_emitir == True
+                estado_opts = ["En proceso"] + (["Emitido"] if puede_emitir else [])
+                
+                # Si el valor precargado era "Emitido" pero ya no cumple, cae a "En proceso"
+                estado_default = form["estado"]
+                if estado_default == "Emitido" and not puede_emitir:
+                    estado_default = "En proceso"
+                
                 estado = st.selectbox(
                     "Estado",
                     estado_opts,
-                    index=index_of(estado_opts, form["estado"], 0)
+                    index=index_of(estado_opts, estado_default, 0)
                 )
-    
+                
+                if not puede_emitir:
+                    st.caption("Para seleccionar **Emitido** debes registrar: Expediente (SGD), Fecha de I.T y Número de I.T.")
+            
             # =========================================
             #     PARTE 2 — DATOS DEL INFORME TÉCNICO
             # =========================================
@@ -377,12 +394,25 @@ if "modo" in st.session_state and seleccion:
                     "Número del Oficio",
                     value=form["numero_oficio"]
                 )
-    
+
+            # Reglas para habilitar "Emitido"
+            expediente_ok = bool(str(expediente).strip())
+            fecha_it_ok = fecha_it is not None
+            numero_it_ok = bool(str(numero_it).strip())
+            
+            puede_emitir = expediente_ok and fecha_it_ok and numero_it_ok
+
+            
             # ======================
             # SUBMIT
             # ======================
             submitted = st.form_submit_button("💾 Guardar Registro")
-    
+
+            if submitted:
+                if estado == "Emitido" and not puede_emitir:
+                    st.error("❌ No se puede guardar como 'Emitido'. Completa Expediente (SGD), Fecha de I.T y Número de I.T.")
+                    st.stop()
+
             if submitted:
                 nombre_ue = seleccion.split(" - ")[1].strip()
     
