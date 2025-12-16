@@ -161,13 +161,20 @@ if seleccion:
 # ================================
 if "modo" in st.session_state and seleccion:
     codigo = seleccion.split(" - ")[0].strip()
+    codigo_norm = str(codigo).strip().lstrip("0")
 
     if st.session_state["modo"] == "historial":
         st.subheader("📌 Último PEI registrado")
 
         try:
             historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
-
+            historial["codigo_ue_norm"] = (
+            historial["codigo_ue"]
+            .astype(str)
+            .str.strip()
+            .str.lstrip("0")   # 🔥 elimina ceros a la izquierda
+        )
+            
             # Normalizar nombres de columnas
             historial.columns = (
                 historial.columns.astype(str)
@@ -193,7 +200,8 @@ if "modo" in st.session_state and seleccion:
             st.info("No hay historial disponible.")
         else:
             #df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
-            df_historial = historial[historial["codigo_ue"] == str(codigo).strip()]
+            #df_historial = historial[historial["codigo_ue"] == str(codigo).strip()]
+            df_historial = historial[historial["codigo_ue_norm"] == codigo_norm]
 
             st.write("Filas encontradas para este pliego:", len(df_historial))
             if not df_historial.empty:
