@@ -167,6 +167,24 @@ if "modo" in st.session_state and seleccion:
 
         try:
             historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
+
+            # Normalizar nombres de columnas
+            historial.columns = (
+                historial.columns.astype(str)
+                .str.strip()
+                .str.lower()
+                .str.replace(" ", "_")
+            )
+            
+            # Diagnóstico rápido (temporal)
+            st.write("Columnas detectadas en historial:", historial.columns.tolist())
+            
+            # Normalizar codigo_ue si existe
+            if "codigo_ue" in historial.columns:
+                historial["codigo_ue"] = historial["codigo_ue"].astype(str).str.strip()
+            else:
+                st.error("El historial no tiene la columna 'codigo_ue'. Revisa el Excel.")
+                st.stop()
         except FileNotFoundError:
             st.error(f"No se encontró el archivo: {HISTORIAL_PATH}")
             historial = pd.DataFrame()
@@ -174,8 +192,12 @@ if "modo" in st.session_state and seleccion:
         if historial.empty:
             st.info("No hay historial disponible.")
         else:
-            df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
+            #df_historial = historial[historial["codigo_ue"].astype(str) == str(codigo)]
+            df_historial = historial[historial["codigo_ue"] == str(codigo).strip()]
 
+            st.write("Filas encontradas para este pliego:", len(df_historial))
+            if not df_historial.empty:
+                st.dataframe(df_historial.tail(5), use_container_width=True)
             if df_historial.empty:
                 st.info("No existe historial para este pliego.")
             else:
