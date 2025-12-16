@@ -8,6 +8,7 @@ from datetime import datetime
 # ✅ PARTE INTEGRADA (colocar al inicio)
 # =====================================
 HISTORIAL_PATH = "data/historial_it_pei.xlsx"
+
 FORM_DEFAULTS = {
     "tipo_pei": "Formulado",
     "etapa_revision": "IT Emitido",
@@ -26,11 +27,13 @@ FORM_DEFAULTS = {
     "numero_oficio": "",
 }
 
+FORM_STATE_KEY = "pei_form_data"  # ✅ NUEVA KEY (ya no choca con st.form)
+
 def init_form_state():
-    st.session_state.setdefault("form_pei", FORM_DEFAULTS.copy())
+    st.session_state.setdefault(FORM_STATE_KEY, FORM_DEFAULTS.copy())
 
 def reset_form_state():
-    st.session_state["form_pei"] = FORM_DEFAULTS.copy()
+    st.session_state[FORM_STATE_KEY] = FORM_DEFAULTS.copy()
 
 def index_of(options, value, fallback=0):
     try:
@@ -39,17 +42,12 @@ def index_of(options, value, fallback=0):
         return fallback
 
 def set_form_state_from_row(row: pd.Series):
-    """Carga un registro del historial al estado del formulario."""
     form = FORM_DEFAULTS.copy()
 
-    def _safe_str(x):
-        return "" if pd.isna(x) else str(x)
-
+    def _safe_str(x): return "" if pd.isna(x) else str(x)
     def _safe_int(x):
-        try:
-            return int(x)
-        except Exception:
-            return 0
+        try: return int(x)
+        except Exception: return 0
 
     def _safe_date(x):
         if pd.isna(x) or x is None or str(x).strip() == "":
@@ -59,7 +57,6 @@ def set_form_state_from_row(row: pd.Series):
         except Exception:
             return None
 
-    # Mapeo: columnas del excel -> claves del formulario
     form["tipo_pei"] = _safe_str(row.get("tipo_pei", FORM_DEFAULTS["tipo_pei"])) or FORM_DEFAULTS["tipo_pei"]
     form["etapa_revision"] = _safe_str(row.get("etapa_revision", FORM_DEFAULTS["etapa_revision"])) or FORM_DEFAULTS["etapa_revision"]
     form["fecha_recepcion"] = _safe_date(row.get("fecha_recepcion"))
@@ -70,14 +67,14 @@ def set_form_state_from_row(row: pd.Series):
     form["comentario"] = _safe_str(row.get("comentario", ""))
     form["vigencia"] = _safe_str(row.get("vigencia", FORM_DEFAULTS["vigencia"])) or FORM_DEFAULTS["vigencia"]
     form["estado"] = _safe_str(row.get("estado", FORM_DEFAULTS["estado"])) or FORM_DEFAULTS["estado"]
-
     form["expediente"] = _safe_str(row.get("expediente", ""))
     form["fecha_it"] = _safe_date(row.get("fecha_it"))
     form["numero_it"] = _safe_str(row.get("numero_it", ""))
     form["fecha_oficio"] = _safe_date(row.get("fecha_oficio"))
     form["numero_oficio"] = _safe_str(row.get("numero_oficio", ""))
 
-    st.session_state["form_pei"] = form
+    st.session_state[FORM_STATE_KEY] = form
+
 
 # =====================================
 # 🏛️ Carga y búsqueda de unidades ejecutoras
@@ -155,6 +152,9 @@ if seleccion:
     with col2:
         if st.button("📝 Nuevo registro"):
             st.session_state["modo"] = "nuevo"
+            reset_form_state()
+            st.rerun()
+
 
 # ================================
 # Procesamiento según opción
@@ -204,8 +204,7 @@ if "modo" in st.session_state and seleccion:
     
         # ✅ Asegura que exista el estado del formulario (precarga desde historial)
         init_form_state()
-        form = st.session_state["form_pei"]
-    
+        form = st.session_state[FORM_STATE_KEY]
         with st.form("form_pei"):
     
             st.write("## Datos de identificación y revisión")
