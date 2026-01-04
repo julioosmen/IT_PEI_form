@@ -167,39 +167,39 @@ if "modo" in st.session_state and seleccion:
         st.subheader("📌 Último PEI registrado")
 
         try:
-        historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
-        
-        # 1️⃣ Normalizar encabezados PRIMERO
-        historial.columns = (
-            historial.columns.astype(str)
-            .str.strip()
-            .str.lower()
-            .str.replace(" ", "_")
-        )
-        
-        # 2️⃣ Validar columna clave
-        if "codigo" not in historial.columns:
-            st.error("❌ El historial no tiene la columna 'codigo'.")
-            st.write("Columnas detectadas:", historial.columns.tolist())
-            st.stop()
-        
-        # 3️⃣ Crear columna normalizada
-        historial["codigo_ue_norm"] = (
-            historial["codigo"]
-            .astype(str)
-            .str.strip()
-            .str.lstrip("0")
-        )
+            historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
+            
+            # 1️⃣ Normalizar encabezados PRIMERO
+            historial.columns = (
+                historial.columns.astype(str)
+                .str.strip()
+                .str.lower()
+                .str.replace(" ", "_")
+            )
+            
+            # 2️⃣ Validar columna clave
+            if "codigo" not in historial.columns:
+                st.error("❌ El historial no tiene la columna 'codigo'.")
+                st.write("Columnas detectadas:", historial.columns.tolist())
+                st.stop()
+            
+            # 3️⃣ Crear columna normalizada
+            historial["codigo_ue_norm"] = (
+                historial["codigo"]
+                .astype(str)
+                .str.strip()
+                .str.lstrip("0")
+            )
             
             # Diagnóstico rápido (temporal)
             st.write("Columnas detectadas en historial:", historial.columns.tolist())
             
             # Normalizar codigo si existe
-            if "codigo" in historial.columns:
-                historial["codigo"] = historial["codigo"].astype(str).str.strip()
-            else:
-                st.error("El historial no tiene la columna 'codigo'. Revisa el Excel.")
-                st.stop()
+            #if "codigo" in historial.columns:
+            #    historial["codigo"] = historial["codigo"].astype(str).str.strip()
+            #else:
+            #    st.error("El historial no tiene la columna 'codigo'. Revisa el Excel.")
+            #    st.stop()
         except FileNotFoundError:
             st.error(f"No se encontró el archivo: {HISTORIAL_PATH}")
             historial = pd.DataFrame()
