@@ -167,21 +167,29 @@ if "modo" in st.session_state and seleccion:
         st.subheader("📌 Último PEI registrado")
 
         try:
-            historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
-            historial["codigo_ue_norm"] = (
+        historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
+        
+        # 1️⃣ Normalizar encabezados PRIMERO
+        historial.columns = (
+            historial.columns.astype(str)
+            .str.strip()
+            .str.lower()
+            .str.replace(" ", "_")
+        )
+        
+        # 2️⃣ Validar columna clave
+        if "codigo" not in historial.columns:
+            st.error("❌ El historial no tiene la columna 'codigo'.")
+            st.write("Columnas detectadas:", historial.columns.tolist())
+            st.stop()
+        
+        # 3️⃣ Crear columna normalizada
+        historial["codigo_ue_norm"] = (
             historial["codigo"]
             .astype(str)
             .str.strip()
-            .str.lstrip("0")   # 🔥 elimina ceros a la izquierda
+            .str.lstrip("0")
         )
-            
-            # Normalizar nombres de columnas
-            historial.columns = (
-                historial.columns.astype(str)
-                .str.strip()
-                .str.lower()
-                .str.replace(" ", "_")
-            )
             
             # Diagnóstico rápido (temporal)
             st.write("Columnas detectadas en historial:", historial.columns.tolist())
@@ -199,8 +207,6 @@ if "modo" in st.session_state and seleccion:
         if historial.empty:
             st.info("No hay historial disponible.")
         else:
-            #df_historial = historial[historial["codigo"].astype(str) == str(codigo)]
-            #df_historial = historial[historial["codigo"] == str(codigo).strip()]
             df_historial = historial[historial["codigo_ue_norm"] == codigo_norm]
 
             st.write("Filas encontradas para este pliego:", len(df_historial))
@@ -405,8 +411,8 @@ if "modo" in st.session_state and seleccion:
                 nombre_ue = seleccion.split(" - ")[1].strip()
     
                 nuevo = {
-                    "codigo_ue": codigo,
-                    "nombre_ue": nombre_ue,
+                    "codigo": codigo,
+                    "nombre": nombre_ue,
                     "año": año,
                     "periodo": periodo,
                     "vigencia": vigencia,
