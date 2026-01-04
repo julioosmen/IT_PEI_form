@@ -188,12 +188,15 @@ if "modo" in st.session_state and seleccion:
                 st.stop()
 
             # 4) Crear columna normalizada para comparar (desde 'codigo')
-            historial["codigo_ue_norm"] = (
-                historial["codigo"]
-                .astype(str)
-                .str.strip()
-                .str.lstrip("0")
-            )
+            def normalizar_codigo(x):
+                if pd.isna(x):
+                    return ""
+                try:
+                    return str(int(float(x)))  # 23.0 → "23"
+                except Exception:
+                    return str(x).strip()
+    
+            historial["codigo_ue_norm"] = historial["codigo"].apply(normalizar_codigo)
 
         except FileNotFoundError:
             st.error(f"No se encontró el archivo: {HISTORIAL_PATH}")
@@ -201,6 +204,8 @@ if "modo" in st.session_state and seleccion:
         except Exception as e:
             st.error(f"Error al leer el historial: {e}")
             st.stop()
+
+        codigo_norm = normalizar_codigo(codigo)
 
         # ================================
         # 🔎 DIAGNÓSTICO DE CÓDIGOS
