@@ -1,8 +1,44 @@
 import re
 import streamlit as st
 import pandas as pd
+import os
 from datetime import datetime
 #from supabase import create_client
+
+def guardar_en_historial_excel(nuevo: dict, path: str):
+    """
+    Guarda un nuevo registro en el Excel historial_it_pei.xlsx
+    - Si el archivo no existe, lo crea
+    - Si existe, agrega una nueva fila
+    """
+
+    # Normalización robusta del código
+    def normalizar_codigo(x):
+        if pd.isna(x) or x is None:
+            return ""
+        try:
+            return str(int(float(x)))   # 23.0 -> "23"
+        except Exception:
+            return str(x).strip()
+
+    # 1) Dict -> DataFrame (1 fila)
+    df_nuevo = pd.DataFrame([nuevo])
+
+    # 2) Asegurar columna normalizada
+    df_nuevo["codigo_ue_norm"] = df_nuevo["codigo"].apply(normalizar_codigo)
+
+    # 3) Crear archivo si no existe
+    if not os.path.exists(path):
+        df_nuevo.to_excel(path, index=False, engine="openpyxl")
+        return
+
+    # 4) Leer historial existente
+    df_hist = pd.read_excel(path, engine="openpyxl")
+    df_hist.columns = df_hist.columns.astype(str).str.strip()
+
+    # 5) Concatenar y sobrescribir
+    df_final = pd.concat([df_hist, df_nuevo], ignore_index=True, sort=False)
+    df_final.to_excel(path, index=False, engine="openpyxl")
 
 # =====================================
 # ✅ PARTE INTEGRADA (colocar al inicio)
@@ -470,5 +506,12 @@ if "modo" in st.session_state and seleccion:
                     "numero_oficio": numero_oficio
                 }
     
-                st.session_state["nuevo_registro"] = nuevo
-                st.success("✔ Registro listo para guardar en Excel")
+                #st.session_state["nuevo_registro"] = nuevo
+                #st.success("✔ Registro listo para guardar en Excel")
+                try:
+                    guardar_en_historial_excel(nuevo, HISTORIAL_PATH)
+                    st.success("✅ Registro guardado en el historial.")
+                    st.session_state["modo"] = "historial"
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Error al guardar en el Excel: {e}")
