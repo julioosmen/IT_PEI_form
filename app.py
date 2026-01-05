@@ -1,8 +1,44 @@
 import re
 import streamlit as st
 import pandas as pd
+import os
 from datetime import datetime
 #from supabase import create_client
+
+def guardar_en_historial_excel(nuevo: dict, path: str):
+    """
+    Guarda un nuevo registro en el Excel historial_it_pei.xlsx
+    - Si el archivo no existe, lo crea
+    - Si existe, agrega una nueva fila
+    """
+
+    # Normalización robusta del código
+    def normalizar_codigo(x):
+        if pd.isna(x) or x is None:
+            return ""
+        try:
+            return str(int(float(x)))   # 23.0 -> "23"
+        except Exception:
+            return str(x).strip()
+
+    # 1) Dict -> DataFrame (1 fila)
+    df_nuevo = pd.DataFrame([nuevo])
+
+    # 2) Asegurar columna normalizada
+    df_nuevo["codigo_ue_norm"] = df_nuevo["codigo"].apply(normalizar_codigo)
+
+    # 3) Crear archivo si no existe
+    if not os.path.exists(path):
+        df_nuevo.to_excel(path, index=False, engine="openpyxl")
+        return
+
+    # 4) Leer historial existente
+    df_hist = pd.read_excel(path, engine="openpyxl")
+    df_hist.columns = df_hist.columns.astype(str).str.strip()
+
+    # 5) Concatenar y sobrescribir
+    df_final = pd.concat([df_hist, df_nuevo], ignore_index=True, sort=False)
+    df_final.to_excel(path, index=False, engine="openpyxl")
 
 # =====================================
 # ✅ PARTE INTEGRADA (colocar al inicio)
@@ -163,71 +199,115 @@ if "modo" in st.session_state and seleccion:
     codigo = seleccion.split(" - ")[0].strip()
     codigo_norm = str(codigo).strip().lstrip("0")
 
+    # ================================
+    # MODO: HISTORIAL
+    # ================================
     if st.session_state["modo"] == "historial":
         st.subheader("📌 Último PEI registrado")
 
         try:
+            # 1) Cargar historial
             historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
-            historial["codigo_ue_norm"] = (
-            historial["codigo"]
-            .astype(str)
-            .str.strip()
-            .str.lstrip("0")   # 🔥 elimina ceros a la izquierda
-        )
-            
-            # Normalizar nombres de columnas
+
+            # 2) Normalizar nombres de columnas (primero)
             historial.columns = (
                 historial.columns.astype(str)
                 .str.strip()
                 .str.lower()
                 .str.replace(" ", "_")
             )
-            
-            # Diagnóstico rápido (temporal)
-            st.write("Columnas detectadas en historial:", historial.columns.tolist())
-            
-            # Normalizar codigo si existe
-            if "codigo" in historial.columns:
-                historial["codigo"] = historial["codigo"].astype(str).str.strip()
-            else:
-                st.error("El historial no tiene la columna 'codigo'. Revisa el Excel.")
+
+            # 3) Validar columna clave
+            if "codigo" not in historial.columns:
+                st.error("❌ El historial no tiene la columna 'codigo'. Revisa el Excel.")
+                st.write("Columnas detectadas:", historial.columns.tolist())
                 st.stop()
+
+            # 4) Crear columna normalizada para comparar (desde 'codigo')
+            def normalizar_codigo(x):
+                if pd.isna(x):
+                    return ""
+                try:
+                    return str(int(float(x)))  # 23.0 → "23"
+                except Exception:
+                    return str(x).strip()
+    
+            historial["codigo_ue_norm"] = historial["codigo"].apply(normalizar_codigo)
+
         except FileNotFoundError:
             st.error(f"No se encontró el archivo: {HISTORIAL_PATH}")
-            historial = pd.DataFrame()
+            st.stop()
+        except Exception as e:
+            st.error(f"Error al leer el historial: {e}")
+            st.stop()
 
-        if historial.empty:
-            st.info("No hay historial disponible.")
+        codigo_norm = normalizar_codigo(codigo)
+
+        # ================================
+        # 🔎 DIAGNÓSTICO DE CÓDIGOS
+        # ================================
+        st.markdown("### 🔎 Diagnóstico de coincidencia de códigos")
+        st.write("Código seleccionado (raw):", codigo)
+        st.write("Código seleccionado (normalizado):", codigo_norm)
+
+        # Muestra algunos valores reales del historial para verificar si hay match
+        st.write(
+            "Códigos únicos en historial (raw, primeros 15):",
+            historial["codigo"].astype(str).unique()[:15]
+        )
+        st.write(
+            "Códigos únicos en historial (normalizados, primeros 15):",
+            historial["codigo_ue_norm"].unique()[:15]
+        )
+
+        # (Opcional) muestra filas donde el código normalizado coincide parcialmente
+        # útil si el código viene con prefijos/sufijos o formatos distintos
+        try:
+            posibles = historial[historial["codigo"].astype(str).str.contains(str(codigo), na=False)].head(10)
+            if not posibles.empty:
+                st.write("Posibles coincidencias por 'contains' (primeras 10 filas):")
+                st.dataframe(posibles, use_container_width=True, hide_index=True)
+        except Exception:
+            pass
+
+        # ================================
+        # 5) Filtrar historial por pliego/UE
+        # ================================
+        df_historial = historial[historial["codigo_ue_norm"] == codigo_norm].copy()
+
+        st.write("Filas encontradas para este pliego:", len(df_historial))
+
+        if df_historial.empty:
+            st.info("No existe historial para este pliego (según la clave de comparación).")
         else:
-            #df_historial = historial[historial["codigo"].astype(str) == str(codigo)]
-            #df_historial = historial[historial["codigo"] == str(codigo).strip()]
-            df_historial = historial[historial["codigo_ue_norm"] == codigo_norm]
+            # Asegurar orden por fecha
+            if "fecha_recepcion" in df_historial.columns:
+                df_historial["fecha_recepcion"] = pd.to_datetime(
+                    df_historial["fecha_recepcion"], errors="coerce"
+                )
 
-            st.write("Filas encontradas para este pliego:", len(df_historial))
-            if not df_historial.empty:
-                st.dataframe(df_historial.tail(5), use_container_width=True)
-            if df_historial.empty:
-                st.info("No existe historial para este pliego.")
-            else:
-                # Asegurar orden por fecha
-                if "fecha_recepcion" in df_historial.columns:
-                    df_historial = df_historial.copy()
-                    df_historial["fecha_recepcion"] = pd.to_datetime(df_historial["fecha_recepcion"], errors="coerce")
+            # Mostrar vista
+            st.dataframe(df_historial.tail(5), use_container_width=True, hide_index=True)
 
+            # Tomar último por fecha
+            if "fecha_recepcion" in df_historial.columns:
                 ultimo = df_historial.sort_values("fecha_recepcion", ascending=False).iloc[0]
-                st.success("Último registro encontrado.")
+            else:
+                ultimo = df_historial.iloc[-1]
 
-                colx, coly = st.columns([1, 2])
-                with colx:
-                    if st.button("⬇️ Cargar este registro al formulario", type="primary"):
-                        init_form_state()
-                        set_form_state_from_row(ultimo)
-                        st.session_state["modo"] = "nuevo"   # Reutiliza el mismo formulario
-                        st.rerun()
+            st.success("Último registro encontrado.")
 
-                with coly:
-                    st.caption("Vista rápida del registro (solo verificación):")
-                    st.json(ultimo.to_dict())
+            colx, coly = st.columns([1, 2])
+            with colx:
+                if st.button("⬇️ Cargar este registro al formulario", type="primary"):
+                    init_form_state()
+                    set_form_state_from_row(ultimo)
+                    st.session_state["modo"] = "nuevo"   # Reutiliza el mismo formulario
+                    st.rerun()
+
+            with coly:
+                st.caption("Vista rápida del registro (solo verificación):")
+                st.json(ultimo.to_dict())
 
     elif st.session_state["modo"] == "nuevo":
         st.subheader("📝 Crear nuevo registro PEI")
@@ -405,8 +485,8 @@ if "modo" in st.session_state and seleccion:
                 nombre_ue = seleccion.split(" - ")[1].strip()
     
                 nuevo = {
-                    "codigo_ue": codigo,
-                    "nombre_ue": nombre_ue,
+                    "codigo": codigo,
+                    "nombre": nombre_ue,
                     "año": año,
                     "periodo": periodo,
                     "vigencia": vigencia,
@@ -426,5 +506,12 @@ if "modo" in st.session_state and seleccion:
                     "numero_oficio": numero_oficio
                 }
     
-                st.session_state["nuevo_registro"] = nuevo
-                st.success("✔ Registro listo para guardar en Excel")
+                #st.session_state["nuevo_registro"] = nuevo
+                #st.success("✔ Registro listo para guardar en Excel")
+                try:
+                    guardar_en_historial_excel(nuevo, HISTORIAL_PATH)
+                    st.success("✅ Registro guardado en el historial.")
+                    st.session_state["modo"] = "historial"
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Error al guardar en el Excel: {e}")
