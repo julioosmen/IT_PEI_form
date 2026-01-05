@@ -515,3 +515,13 @@ if "modo" in st.session_state and seleccion:
                     st.rerun()
                 except Exception as e:
                     st.error(f"❌ Error al guardar en el Excel: {e}")
+
+                st.write("📄 HISTORIAL_PATH:", HISTORIAL_PATH)
+                st.write("📍 Ruta absoluta:", os.path.abspath(HISTORIAL_PATH))
+                
+                if os.path.exists(HISTORIAL_PATH):
+                    st.write("✅ Existe en este entorno.")
+                    st.write("🕒 Última modificación (mtime):", datetime.fromtimestamp(os.path.getmtime(HISTORIAL_PATH)))
+                    st.write("📦 Tamaño (bytes):", os.path.getsize(HISTORIAL_PATH))
+                else:
+                    st.write("❌ No existe en este entorno.")
