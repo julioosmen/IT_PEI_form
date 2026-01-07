@@ -247,18 +247,18 @@ if "modo" in st.session_state and seleccion:
         # 🔎 DIAGNÓSTICO DE CÓDIGOS
         # ================================
         st.markdown("### 🔎 Diagnóstico de coincidencia de códigos")
-        st.write("Código seleccionado (raw):", codigo)
-        st.write("Código seleccionado (normalizado):", codigo_norm)
+        #st.write("Código seleccionado (raw):", codigo)
+        #st.write("Código seleccionado (normalizado):", codigo_norm)
 
         # Muestra algunos valores reales del historial para verificar si hay match
-        st.write(
-            "Códigos únicos en historial (raw, primeros 15):",
-            historial["codigo"].astype(str).unique()[:15]
-        )
-        st.write(
-            "Códigos únicos en historial (normalizados, primeros 15):",
-            historial["codigo_ue_norm"].unique()[:15]
-        )
+        #st.write(
+        #    "Códigos únicos en historial (raw, primeros 15):",
+        #    historial["codigo"].astype(str).unique()[:15]
+        #)
+        #st.write(
+        #    "Códigos únicos en historial (normalizados, primeros 15):",
+        #    historial["codigo_ue_norm"].unique()[:15]
+        #)
 
         # (Opcional) muestra filas donde el código normalizado coincide parcialmente
         # útil si el código viene con prefijos/sufijos o formatos distintos
