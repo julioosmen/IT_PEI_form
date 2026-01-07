@@ -305,9 +305,9 @@ if "modo" in st.session_state and seleccion:
                     st.session_state["modo"] = "nuevo"   # Reutiliza el mismo formulario
                     st.rerun()
 
-            with coly:
-                st.caption("Vista rápida del registro (solo verificación):")
-                st.json(ultimo.to_dict())
+            #with coly:
+                #st.caption("Vista rápida del registro (solo verificación):")
+                #st.json(ultimo.to_dict())
 
     elif st.session_state["modo"] == "nuevo":
         st.subheader("📝 Crear nuevo registro PEI")
