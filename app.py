@@ -246,7 +246,7 @@ if "modo" in st.session_state and seleccion:
         # ================================
         # 🔎 DIAGNÓSTICO DE CÓDIGOS
         # ================================
-        st.markdown("### 🔎 Diagnóstico de coincidencia de códigos")
+        #st.markdown("### 🔎 Diagnóstico de coincidencia de códigos")
         #st.write("Código seleccionado (raw):", codigo)
         #st.write("Código seleccionado (normalizado):", codigo_norm)
 
@@ -299,7 +299,7 @@ if "modo" in st.session_state and seleccion:
 
             colx, coly = st.columns([1, 2])
             with colx:
-                if st.button("⬇️ Cargar este registro al formulario", type="primary"):
+                if st.button("⬇️ Cargar último registro disponible al formulario", type="primary"):
                     init_form_state()
                     set_form_state_from_row(ultimo)
                     st.session_state["modo"] = "nuevo"   # Reutiliza el mismo formulario
