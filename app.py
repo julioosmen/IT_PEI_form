@@ -263,7 +263,7 @@ if "modo" in st.session_state and seleccion:
         # (Opcional) muestra filas donde el código normalizado coincide parcialmente
         # útil si el código viene con prefijos/sufijos o formatos distintos
         #try:
-            posibles = historial[historial["codigo"].astype(str).str.contains(str(codigo), na=False)].head(10)
+            #posibles = historial[historial["codigo"].astype(str).str.contains(str(codigo), na=False)].head(10)
             #if not posibles.empty:
                 #st.write("Posibles coincidencias por 'contains' (primeras 10 filas):")
                 #st.dataframe(posibles, use_container_width=True, hide_index=True)
