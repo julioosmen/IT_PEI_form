@@ -203,7 +203,7 @@ if "modo" in st.session_state and seleccion:
     # MODO: HISTORIAL
     # ================================
     if st.session_state["modo"] == "historial":
-        st.subheader("📌 Último PEI registrado")
+        st.subheader("📌 Historial PEI")
 
         try:
             # 1) Cargar historial
