@@ -218,7 +218,7 @@ if seleccion:
             unsafe_allow_html=True
         )
 
-        st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top:10px;'></div>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
