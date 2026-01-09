@@ -523,28 +523,3 @@ if "modo" in st.session_state and seleccion:
                     st.write("📦 Tamaño (bytes):", os.path.getsize(HISTORIAL_PATH))
                 else:
                     st.write("❌ No existe en este entorno.")
-
-st.markdown(
-    """
-    <style>
-    .footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: #F5F7FA;
-        color: #9AA0A6;
-        text-align: center;
-        padding: 10px 0;
-        font-size: 13px;
-        border-top: 1px solid #E0E6ED;
-        z-index: 100;
-    }
-    </style>
-
-    <div class="footer">
-        App elaborada por la <b>Dirección Nacional de Coordinación y Planeamiento (DNCP)</b> – <b>CEPLAN</b>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
