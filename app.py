@@ -157,7 +157,7 @@ def render_header():
         <div style="text-align:center; margin-top:10px;">
             <img src="data:image/png;base64,{logo_base64}" width="220" style="display:block; margin:0 auto;">
             <h1 style="
-                margin-top:5px;
+                margin-top:0px;
                 margin-bottom:10px;
                 font-size:2.2rem;
             ">
