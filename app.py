@@ -149,7 +149,7 @@ st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 #st.subheader("Responsable Institucional")
 
 resp_sel = st.selectbox(
-    "Escribe o selecciona el responsable institucional",
+    "Escriba o seleccione el responsable institucional",
     options=responsables,
     index=None,
     placeholder="Escribe el nombre del responsable..."
@@ -177,7 +177,7 @@ opciones = [
 ]
 
 seleccion = st.selectbox(
-    "🔍 Selecciona o escribe el código o nombre",
+    "Escriba o seleccione el código o nombre del pliego",
     opciones,
     index=None,
     placeholder="Escribe el código o nombre..."
