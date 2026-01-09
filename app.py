@@ -213,7 +213,7 @@ if seleccion:
                     Sector: {sector}
                     Nivel de gobierno: {nivel_gob}
                     Responsable institucional: {responsable}
-            </div>
+            #</div>
             """,
             unsafe_allow_html=True
         )
