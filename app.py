@@ -156,7 +156,7 @@ def render_header():
         f"""
         <div style="text-align:center; margin-top:10px;">
             <img src="data:image/png;base64,{logo_base64}" width="160">
-            <h1 style="margin-top:15px;">
+            <h1 style="margin-top:5px;">
                 Registro de IT del Plan Estratégico Institucional (PEI)
             </h1>
         </div>
