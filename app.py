@@ -142,6 +142,19 @@ responsables = sorted([r for r in df_ue["Responsable_Institucional"].unique() if
 
 #st.image("logo.png", width=160)
 st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
+st.markdown(
+    """
+    <h1 style="
+        text-align: center;
+        font-size: 2.3rem;
+        margin-top: 10px;
+        margin-bottom: 25px;
+    ">
+        Registro de IT del Plan Estratégico Institucional (PEI)
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
