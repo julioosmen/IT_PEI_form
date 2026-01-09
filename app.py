@@ -2,6 +2,7 @@ import re
 import streamlit as st
 import pandas as pd
 import os
+import base64
 from datetime import datetime
 #from supabase import create_client
 
@@ -140,8 +141,26 @@ df_ue["Responsable_Institucional"] = (
 
 responsables = sorted([r for r in df_ue["Responsable_Institucional"].unique() if r])
 
-st.image("logo.png", width=160)
+# st.image("logo.png", width=160)
 #"st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
+
+def render_header():
+    logo_base64 = get_image_base64("logo.png")
+
+    st.markdown(
+        f"""
+        <div style="text-align:center; margin-top:10px;">
+            <img src="data:image/png;base64,{logo_base64}" width="160">
+            <h1 style="margin-top:15px;">
+                Registro de IT del Plan Estratégico Institucional (PEI)
+            </h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+render_header()
+
 st.markdown(
     """
     <h1 style="
