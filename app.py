@@ -139,9 +139,8 @@ df_ue["Responsable_Institucional"] = (
 )
 
 responsables = sorted([r for r in df_ue["Responsable_Institucional"].unique() if r])
-
-#st.image("logo.png", width=160)
-st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
+st.image("logo.png", width=160)
+"st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 st.markdown(
     """
     <h1 style="
