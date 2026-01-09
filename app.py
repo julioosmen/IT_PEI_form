@@ -146,7 +146,7 @@ st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 # ================================
 # 2) Filtro 1: Responsable Institucional
 # ================================
-st.subheader("Responsable Institucional")
+#st.subheader("Responsable Institucional")
 
 resp_sel = st.selectbox(
     "Escribe o selecciona el responsable institucional",
@@ -218,7 +218,8 @@ if seleccion:
             unsafe_allow_html=True
         )
 
-    st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
+        st.subheader({sector})
 
     col1, col2 = st.columns(2)
     with col1:
