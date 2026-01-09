@@ -219,7 +219,7 @@ if seleccion:
         )
 
         st.markdown("<div style='margin-top:25px;'></div>", unsafe_allow_html=True)
-        st.subheader("Sector: sector")
+        st.subheader("Sector: {sector}")
 
     col1, col2 = st.columns(2)
     with col1:
