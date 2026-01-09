@@ -145,8 +145,8 @@ responsables = sorted([r for r in df_ue["Responsable_Institucional"].unique() if
 #"st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 
 def get_image_base64(path):
-with open(path, "rb") as f:
-    return base64.b64encode(f.read()).decode()
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
         
 def render_header():
        
