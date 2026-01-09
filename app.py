@@ -203,7 +203,7 @@ if "modo" in st.session_state and seleccion:
     # MODO: HISTORIAL
     # ================================
     if st.session_state["modo"] == "historial":
-        st.subheader("📌 Último PEI registrado")
+        st.subheader("📌 Historial PEI")
 
         try:
             # 1) Cargar historial
@@ -246,29 +246,29 @@ if "modo" in st.session_state and seleccion:
         # ================================
         # 🔎 DIAGNÓSTICO DE CÓDIGOS
         # ================================
-        st.markdown("### 🔎 Diagnóstico de coincidencia de códigos")
-        st.write("Código seleccionado (raw):", codigo)
-        st.write("Código seleccionado (normalizado):", codigo_norm)
+        #st.markdown("### 🔎 Diagnóstico de coincidencia de códigos")
+        #st.write("Código seleccionado (raw):", codigo)
+        #st.write("Código seleccionado (normalizado):", codigo_norm)
 
         # Muestra algunos valores reales del historial para verificar si hay match
-        st.write(
-            "Códigos únicos en historial (raw, primeros 15):",
-            historial["codigo"].astype(str).unique()[:15]
-        )
-        st.write(
-            "Códigos únicos en historial (normalizados, primeros 15):",
-            historial["codigo_ue_norm"].unique()[:15]
-        )
+        #st.write(
+        #    "Códigos únicos en historial (raw, primeros 15):",
+        #    historial["codigo"].astype(str).unique()[:15]
+        #)
+        #st.write(
+        #    "Códigos únicos en historial (normalizados, primeros 15):",
+        #    historial["codigo_ue_norm"].unique()[:15]
+        #)
 
         # (Opcional) muestra filas donde el código normalizado coincide parcialmente
         # útil si el código viene con prefijos/sufijos o formatos distintos
-        try:
-            posibles = historial[historial["codigo"].astype(str).str.contains(str(codigo), na=False)].head(10)
-            if not posibles.empty:
-                st.write("Posibles coincidencias por 'contains' (primeras 10 filas):")
-                st.dataframe(posibles, use_container_width=True, hide_index=True)
-        except Exception:
-            pass
+        #try:
+            #posibles = historial[historial["codigo"].astype(str).str.contains(str(codigo), na=False)].head(10)
+            #if not posibles.empty:
+                #st.write("Posibles coincidencias por 'contains' (primeras 10 filas):")
+                #st.dataframe(posibles, use_container_width=True, hide_index=True)
+        #except Exception:
+            #pass
 
         # ================================
         # 5) Filtrar historial por pliego/UE
@@ -299,15 +299,15 @@ if "modo" in st.session_state and seleccion:
 
             colx, coly = st.columns([1, 2])
             with colx:
-                if st.button("⬇️ Cargar este registro al formulario", type="primary"):
+                if st.button("⬇️ Cargar último registro disponible al formulario", type="primary"):
                     init_form_state()
                     set_form_state_from_row(ultimo)
                     st.session_state["modo"] = "nuevo"   # Reutiliza el mismo formulario
                     st.rerun()
 
-            with coly:
-                st.caption("Vista rápida del registro (solo verificación):")
-                st.json(ultimo.to_dict())
+            #with coly:
+                #st.caption("Vista rápida del registro (solo verificación):")
+                #st.json(ultimo.to_dict())
 
     elif st.session_state["modo"] == "nuevo":
         st.subheader("📝 Crear nuevo registro PEI")
@@ -515,3 +515,13 @@ if "modo" in st.session_state and seleccion:
                     st.rerun()
                 except Exception as e:
                     st.error(f"❌ Error al guardar en el Excel: {e}")
+
+                st.write("📄 HISTORIAL_PATH:", HISTORIAL_PATH)
+                st.write("📍 Ruta absoluta:", os.path.abspath(HISTORIAL_PATH))
+                
+                if os.path.exists(HISTORIAL_PATH):
+                    st.write("✅ Existe en este entorno.")
+                    st.write("🕒 Última modificación (mtime):", datetime.fromtimestamp(os.path.getmtime(HISTORIAL_PATH)))
+                    st.write("📦 Tamaño (bytes):", os.path.getsize(HISTORIAL_PATH))
+                else:
+                    st.write("❌ No existe en este entorno.")
