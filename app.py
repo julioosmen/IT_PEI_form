@@ -168,20 +168,6 @@ render_header()
 
 st.markdown(
     """
-    <h1 style="
-        text-align: center;
-        font-size: 2.3rem;
-        margin-top: 10px;
-        margin-bottom: 25px;
-    ">
-        Registro de IT del Plan Estratégico Institucional (PEI)
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    """
     <style>
     .footer {
         position: fixed;
