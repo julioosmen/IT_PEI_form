@@ -146,17 +146,17 @@ st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 # ================================
 # 2) Filtro 1: Responsable Institucional
 # ================================
-st.subheader("👤 Filtro 1: Responsable Institucional")
+st.subheader("Responsable Institucional")
 
 resp_sel = st.selectbox(
-    "Escribe o selecciona el Responsable Institucional",
+    "Escribe o selecciona el responsable institucional",
     options=responsables,
     index=None,
     placeholder="Escribe el nombre del responsable..."
 )
 
 if not resp_sel:
-    st.info("Selecciona un Responsable Institucional para habilitar la búsqueda de Unidades Ejecutoras.")
+    st.info("Selecciona un responsable para habilitar la búsqueda de Unidades Ejecutoras.")
     st.stop()
 
 # ================================
