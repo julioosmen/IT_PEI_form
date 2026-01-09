@@ -155,7 +155,7 @@ def render_header():
     st.markdown(
         f"""
         <div style="text-align:center; margin-top:10px;">
-            <img src="data:image/png;base64,{logo_base64}" width="160">
+            <img src="data:image/png;base64,{logo_base64}" width="220">
             <h1 style="margin-top:1px;">
                 Registro de IT del Plan Estratégico Institucional (PEI)
             </h1>
