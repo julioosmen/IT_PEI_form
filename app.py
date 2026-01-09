@@ -143,6 +143,32 @@ responsables = sorted([r for r in df_ue["Responsable_Institucional"].unique() if
 #st.image("logo.png", width=160)
 st.title("Registro de IT del Plan Estratégico Institucional (PEI)")
 
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #F5F7FA;
+        color: #9AA0A6;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 13px;
+        border-top: 1px solid #E0E6ED;
+        z-index: 100;
+    }
+    </style>
+
+    <div class="footer">
+        App elaborada por la <b>Dirección Nacional de Coordinación y Planeamiento (DNCP)</b> – <b>CEPLAN</b>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # ================================
 # 2) Filtro 1: Responsable Institucional
 # ================================
