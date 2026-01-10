@@ -82,10 +82,14 @@ def index_of(options, value, fallback=0):
 def set_form_state_from_row(row: pd.Series):
     form = FORM_DEFAULTS.copy()
 
-    def _safe_str(x): return "" if pd.isna(x) else str(x)
+    def _safe_str(x):
+        return "" if pd.isna(x) else str(x).strip()
+
     def _safe_int(x):
-        try: return int(x)
-        except Exception: return 0
+        try:
+            return int(x)
+        except Exception:
+            return 0
 
     def _safe_date(x):
         if pd.isna(x) or x is None or str(x).strip() == "":
@@ -95,16 +99,79 @@ def set_form_state_from_row(row: pd.Series):
         except Exception:
             return None
 
-    form["tipo_pei"] = _safe_str(row.get("tipo_pei", FORM_DEFAULTS["tipo_pei"])) or FORM_DEFAULTS["tipo_pei"]
-    form["etapa_revision"] = _safe_str(row.get("etapa_revision", FORM_DEFAULTS["etapa_revision"])) or FORM_DEFAULTS["etapa_revision"]
+    # Normalizador tolerante para valores de selectbox (mayúsculas, espacios, guiones bajos)
+    def norm_choice(val, mapping: dict, default: str):
+        s = _safe_str(val).lower()
+        s = re.sub(r"\s+", " ", s)      # colapsa espacios múltiples
+        s = s.replace("_", " ").strip() # "en_proceso" -> "en proceso"
+        return mapping.get(s, default)
+
+    # Mapeos a los valores EXACTOS que usa tu formulario
+    estado_map = {
+        "emitido": "Emitido",
+        "en proceso": "En proceso",
+        "proceso": "En proceso",
+    }
+
+    vigencia_map = {
+        "sí": "Sí",
+        "si": "Sí",
+        "no": "No",
+    }
+
+    tipo_pei_map = {
+        "formulado": "Formulado",
+        "ampliado": "Ampliado",
+        "actualizado": "Actualizado",
+    }
+
+    etapa_map = {
+        "it emitido": "IT Emitido",
+        "para emisión de it": "Para emisión de IT",
+        "para emision de it": "Para emisión de IT",
+        "revisión dncp": "Revisión DNCP",
+        "revision dncp": "Revisión DNCP",
+        "revisión dnse": "Revisión DNSE",
+        "revision dnse": "Revisión DNSE",
+        "revisión dnpe": "Revisión DNPE",
+        "revision dnpe": "Revisión DNPE",
+        "subsanación del pliego": "Subsanación del pliego",
+        "subsanacion del pliego": "Subsanación del pliego",
+    }
+
+    # --- CARGA NORMALIZADA ---
+    form["tipo_pei"] = norm_choice(
+        row.get("tipo_pei", FORM_DEFAULTS["tipo_pei"]),
+        tipo_pei_map,
+        FORM_DEFAULTS["tipo_pei"]
+    )
+
+    form["etapa_revision"] = norm_choice(
+        row.get("etapa_revision", FORM_DEFAULTS["etapa_revision"]),
+        etapa_map,
+        FORM_DEFAULTS["etapa_revision"]
+    )
+
     form["fecha_recepcion"] = _safe_date(row.get("fecha_recepcion"))
     form["articulacion"] = _safe_str(row.get("articulacion", ""))
     form["fecha_derivacion"] = _safe_date(row.get("fecha_derivacion"))
     form["periodo"] = _safe_str(row.get("periodo", ""))
     form["cantidad_revisiones"] = _safe_int(row.get("cantidad_revisiones", 0))
     form["comentario"] = _safe_str(row.get("comentario", ""))
-    form["vigencia"] = _safe_str(row.get("vigencia", FORM_DEFAULTS["vigencia"])) or FORM_DEFAULTS["vigencia"]
-    form["estado"] = _safe_str(row.get("estado", FORM_DEFAULTS["estado"])) or FORM_DEFAULTS["estado"]
+
+    form["vigencia"] = norm_choice(
+        row.get("vigencia", FORM_DEFAULTS["vigencia"]),
+        vigencia_map,
+        FORM_DEFAULTS["vigencia"]
+    )
+
+    # ESTE ES EL CAMBIO CLAVE PARA TU BUG:
+    form["estado"] = norm_choice(
+        row.get("estado", FORM_DEFAULTS["estado"]),
+        estado_map,
+        FORM_DEFAULTS["estado"]
+    )
+
     form["expediente"] = _safe_str(row.get("expediente", ""))
     form["fecha_it"] = _safe_date(row.get("fecha_it"))
     form["numero_it"] = _safe_str(row.get("numero_it", ""))
