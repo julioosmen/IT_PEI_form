@@ -241,10 +241,12 @@ def render_header():
             </h1>
         </div>
         """,
-        unsafe_allow_html=True   # 👈 ESTA LÍNEA ES CLAVE
+        unsafe_allow_html=True
     )
 
 render_header()
+
+st.markdown("<h1 style='color:red'>PRUEBA</h1>", unsafe_allow_html=True)
 
 st.markdown(
     """
