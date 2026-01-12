@@ -4,6 +4,8 @@ import pandas as pd
 import os
 import base64
 from datetime import datetime
+from textwrap import dedent
+
 #from supabase import create_client
 
 def guardar_en_historial_excel(nuevo: dict, path: str):
@@ -218,31 +220,17 @@ def get_image_base64(path):
 def render_header():
     logo_base64 = get_image_base64("logo.png")
 
-    st.markdown(
-        f"""
-        <div style="
-            display:flex;
-            align-items:center;
-            gap:16px;
-            margin-top:-10px;
-            padding:6px 0;
-        ">
-            <img src="data:image/png;base64,{logo_base64}"
-                 width="140"
-                 style="display:block;">
-            
-            <h1 style='
-                margin:0;
-                font-size:2.1rem;
-                font-weight:600;
-                line-height:1.2;
-            '>
-                Registro de IT del Plan Estratégico Institucional (PEI)
-            </h1>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    html = f"""
+<div style="display:flex; align-items:center; gap:16px; margin-top:-10px; padding:6px 0;">
+  <img src="data:image/png;base64,{logo_base64}" width="140" style="display:block;">
+  <h1 style="margin:0; font-size:2.1rem; font-weight:600; line-height:1.2;">
+    Registro de IT del Plan Estratégico Institucional (PEI)
+  </h1>
+</div>
+"""
+
+    st.markdown(dedent(html), unsafe_allow_html=True)
+
 
 render_header()
 
