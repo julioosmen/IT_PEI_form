@@ -358,8 +358,6 @@ if "modo" in st.session_state and seleccion:
     # MODO: HISTORIAL
     # ================================
     if st.session_state["modo"] == "historial":
-        st.subheader("📌 Historial PEI")
-
         try:
             historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
 
