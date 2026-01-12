@@ -216,17 +216,26 @@ def get_image_base64(path):
         return base64.b64encode(f.read()).decode()
         
 def render_header():
-       
     logo_base64 = get_image_base64("logo.png")
 
     st.markdown(
         f"""
-        <div style="text-align:center; margin-top:10px;">
-            <img src="data:image/png;base64,{logo_base64}" width="220" style="display:block; margin:0 auto;">
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:16px;
+            margin-top:-10px;
+            padding:6px 0;
+        ">
+            <img src="data:image/png;base64,{logo_base64}"
+                 width="140"
+                 style="display:block;">
+            
             <h1 style="
-                margin-top:0px;
-                margin-bottom:10px;
-                font-size:2.2rem;
+                margin:0;
+                font-size:2.1rem;
+                font-weight:600;
+                line-height:1.2;
             ">
                 Registro de IT del Plan Estratégico Institucional (PEI)
             </h1>
