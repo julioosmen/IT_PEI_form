@@ -45,7 +45,7 @@ def guardar_en_historial_excel(nuevo: dict, path: str):
 
 
 # =====================================
-# ✅ PARTE INTEGRADA (colocar al inicio)
+# ✅ PARTE INTEGRADA
 # =====================================
 HISTORIAL_PATH = "data/historial_it_pei.xlsx"
 
@@ -67,7 +67,7 @@ FORM_DEFAULTS = {
     "numero_oficio": "",
 }
 
-FORM_STATE_KEY = "pei_form_data"  # ✅ NUEVA KEY (ya no choca con st.form)
+FORM_STATE_KEY = "pei_form_data"
 
 def init_form_state():
     st.session_state.setdefault(FORM_STATE_KEY, FORM_DEFAULTS.copy())
