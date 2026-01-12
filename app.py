@@ -338,7 +338,7 @@ if seleccion:
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📌 Historial PEI"):
+        if st.button("📂 Historial PEI"):
             st.session_state["modo"] = "historial"
 
     with col2:
