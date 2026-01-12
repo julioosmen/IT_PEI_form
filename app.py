@@ -231,12 +231,12 @@ def render_header():
                  width="140"
                  style="display:block;">
             
-            <h1 style="
+            <h1 style='
                 margin:0;
                 font-size:2.1rem;
                 font-weight:600;
                 line-height:1.2;
-            ">
+            '>
                 Registro de IT del Plan Estratégico Institucional (PEI)
             </h1>
         </div>
@@ -246,7 +246,7 @@ def render_header():
 
 render_header()
 
-st.markdown("<h1 style='color:red'>PRUEBA</h1>", unsafe_allow_html=True)
+#st.markdown("<h1 style='color:red'>PRUEBA</h1>", unsafe_allow_html=True)
 
 st.markdown(
     """
