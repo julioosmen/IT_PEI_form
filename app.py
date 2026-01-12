@@ -327,15 +327,14 @@ if seleccion:
                 font-size: 14px;
                 color: #333;
             ">
-                    Sector: {sector}
-                    Nivel de gobierno: {nivel_gob}
-                    Responsable institucional: {responsable}
+                <div><strong>Sector:</strong> {sector}</div>
+                <div><strong>Nivel de gobierno:</strong> {nivel_gob}</div>
+                <div><strong>Responsable institucional:</strong> {responsable}</div>
             </div>
             """,
             unsafe_allow_html=True
         )
 
-        st.markdown("<div style='margin-top:10px;'></div>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
