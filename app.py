@@ -6,6 +6,7 @@ import base64
 from datetime import datetime
 from textwrap import dedent
 
+from adapters.historial_sharepoint import adaptar_historial_sharepoint
 #from supabase import create_client
 
 def guardar_en_historial_excel(nuevo: dict, path: str):
@@ -359,20 +360,19 @@ if "modo" in st.session_state and seleccion:
     # ================================
     if st.session_state["modo"] == "historial":
         try:
-            historial = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
+            # 1) Lee el Excel (hoy local, mañana SharePoint)
+            historial_raw = pd.read_excel(HISTORIAL_PATH, engine="openpyxl")
 
-            historial.columns = (
-                historial.columns.astype(str)
-                .str.strip()
-                .str.lower()
-                .str.replace(" ", "_")
-            )
+            # 2) ✅ Adapter SharePoint -> estándar interno
+            historial = adaptar_historial_sharepoint(historial_raw)
 
+            # 3) Validación de columna clave
             if "codigo" not in historial.columns:
-                st.error("❌ El historial no tiene la columna 'codigo'. Revisa el Excel.")
+                st.error("❌ El historial no tiene la columna clave 'codigo'. Revisa el Excel de SharePoint.")
                 st.write("Columnas detectadas:", historial.columns.tolist())
                 st.stop()
 
+            # 4) Normalización de clave (igual que ya tenías)
             def normalizar_codigo(x):
                 if pd.isna(x):
                     return ""
@@ -420,6 +420,7 @@ if "modo" in st.session_state and seleccion:
                     set_form_state_from_row(ultimo)
                     st.session_state["modo"] = "nuevo"
                     st.rerun()
+
 
     # ================================
     # MODO: NUEVO
